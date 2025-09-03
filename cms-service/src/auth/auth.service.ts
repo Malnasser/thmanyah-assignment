@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   ConflictException,
+  Inject,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -10,6 +11,9 @@ import { AuthRepository } from './auth.repository';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +21,7 @@ export class AuthService {
     private readonly authRepository: AuthRepository,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
@@ -33,7 +38,9 @@ export class AuthService {
       password: hashedPassword,
     });
 
-    return this.generateTokens(user);
+    const authResponse = await this.generateTokens(user);
+    await this.cacheManager.set(`user_profile_${user.id}`, user, 60 * 60 * 1000); // Cache user profile for 1 hour
+    return authResponse;
   }
 
   async login(loginDto: LoginDto): Promise<AuthResponseDto> {
@@ -42,7 +49,9 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return this.generateTokens(user);
+    const authResponse = await this.generateTokens(user);
+    await this.cacheManager.set(`user_profile_${user.id}`, user, 60 * 60 * 1000); // Cache user profile for 1 hour
+    return authResponse;
   }
 
   async refreshToken(refreshToken: string): Promise<AuthResponseDto> {
@@ -56,7 +65,9 @@ export class AuthService {
         throw new UnauthorizedException('Invalid refresh token');
       }
 
-      return this.generateTokens(user);
+      const authResponse = await this.generateTokens(user);
+      await this.cacheManager.set(`user_profile_${user.id}`, user, 60 * 60 * 1000); // Cache user profile for 1 hour
+      return authResponse;
     } catch (error) {
       throw new UnauthorizedException('Invalid refresh token');
     }
@@ -64,10 +75,24 @@ export class AuthService {
 
   async logout(userId: string): Promise<void> {
     await this.authRepository.removeRefreshToken(userId);
+    await this.cacheManager.del(`user_profile_${userId}`); // Invalidate cached user profile
   }
 
   async getUsersCount(): Promise<number> {
     return this.authRepository.countUsers();
+  }
+
+  async getUserProfile(userId: string): Promise<User | null> {
+    const cachedUser = await this.cacheManager.get<User>(`user_profile_${userId}`);
+    if (cachedUser) {
+      return cachedUser;
+    }
+
+    const user = await this.authRepository.findById(userId);
+    if (user) {
+      await this.cacheManager.set(`user_profile_${userId}`, user, 60 * 60 * 1000); // Cache user profile for 1 hour
+    }
+    return user;
   }
 
   private async generateTokens(user: any): Promise<AuthResponseDto> {

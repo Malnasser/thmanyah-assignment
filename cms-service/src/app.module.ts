@@ -16,11 +16,14 @@ import { User } from './auth/entities/user.entity';
   imports: [
     CacheModule.registerAsync({
       isGlobal: true,
-      imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        store: redisStore,
-        host: configService.get('REDIS_HOST'),
-        port: configService.get('REDIS_PORT'),
+        store: await redisStore({
+          socket: {
+            host: configService.get<string>('REDIS_HOST'),
+            port: configService.get<number>('REDIS_PORT'),
+          },
+          ttl: 60000, // optional, default TTL in ms
+        }),
       }),
       inject: [ConfigService],
     }),

@@ -1,40 +1,135 @@
 import { FindManyOptions, DeepPartial } from 'typeorm';
 import { BaseRepository } from './base-repository.abstract';
+import { Inject } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 // TODO: move this abstract to a proper file
 export abstract class BaseService<T> {
   protected baseRepository: BaseRepository<T>;
+  protected cacheManager: Cache;
+  protected entityType: new () => T;
 
-  constructor(baseRepository: BaseRepository<T>) {
+  constructor(
+    baseRepository: BaseRepository<T>,
+    @Inject(CACHE_MANAGER) cacheManager: Cache,
+    entityType: new () => T,
+  ) {
     this.baseRepository = baseRepository;
+    this.cacheManager = cacheManager;
+    this.entityType = entityType;
+  }
+
+  protected getCacheKey(id?: string | number | Partial<T>): string {
+    const entityName = this.entityType.name.toLowerCase();
+    const key = id
+      ? typeof id === 'object'
+        ? `${entityName}_${JSON.stringify(id)}`
+        : `${entityName}_${id}`
+      : `all_${entityName}s`;
+    console.log(`Generated cache key: ${key}`);
+    return key;
+  }
+
+  protected getPaginationCacheKey(
+    page: number,
+    limit: number,
+    condition?: Partial<T>,
+  ): string {
+    const entityName = this.entityType.name.toLowerCase();
+    const conditionKey = condition ? JSON.stringify(condition) : 'all';
+    return `${entityName}_page_${page}_limit_${limit}_${conditionKey}`;
   }
 
   async create(entity: DeepPartial<T>): Promise<T> {
-    return this.baseRepository.create(entity);
+    const createdEntity = await this.baseRepository.create(entity);
+    await this.cacheManager.del(this.getCacheKey()); // Invalidate all
+    return createdEntity;
   }
 
   async findById(id: string | number): Promise<T | null> {
-    return this.baseRepository.findById(id);
+    const cacheKey = this.getCacheKey(id);
+    console.log(`Attempting to get from cache with key: ${cacheKey}`);
+    const cachedData = await this.cacheManager.get<T>(cacheKey);
+    if (cachedData) {
+      console.log(`Cache hit for key: ${cacheKey}`);
+      return cachedData;
+    }
+    console.log(`Cache miss for key: ${cacheKey}. Fetching from repository.`);
+    const data = await this.baseRepository.findById(id);
+    if (data) {
+      console.log(
+        `Data fetched from repository. Setting cache for key: ${cacheKey}`,
+      );
+      await this.cacheManager.set(cacheKey, data, 60 * 60 * 1000); // 1 hour TTL
+    } else {
+      console.log(`No data found from repository for key: ${cacheKey}`);
+    }
+    return data;
   }
 
   async findAll(options?: FindManyOptions<T>): Promise<T[]> {
-    return this.baseRepository.findAll(options);
+    const cacheKey = this.getCacheKey();
+    console.log(`Attempting to get from cache with key: ${cacheKey}`);
+    const cachedData = await this.cacheManager.get<T[]>(cacheKey);
+    if (cachedData) {
+      console.log(`Cache hit for key: ${cacheKey}`);
+      return cachedData;
+    }
+    console.log(`Cache miss for key: ${cacheKey}. Fetching from repository.`);
+    const data = await this.baseRepository.findAll(options);
+    console.log(
+      `Data fetched from repository. Setting cache for key: ${cacheKey}`,
+    );
+    await this.cacheManager.set(cacheKey, data, 60 * 60 * 1000); // 1 hour TTL
+    return data;
   }
 
   async update(id: string | number, entity: Partial<T>): Promise<T | null> {
-    return this.baseRepository.update(id, entity);
+    const updatedEntity = await this.baseRepository.update(id, entity);
+    console.log(
+      `Invalidating cache for all entities with key: ${this.getCacheKey()}`,
+    );
+    await this.cacheManager.del(this.getCacheKey()); // Invalidate all
+    console.log(
+      `Invalidating cache for specific entity with key: ${this.getCacheKey(id)}`,
+    );
+    await this.cacheManager.del(this.getCacheKey(id)); // Invalidate specific
+    return updatedEntity;
   }
 
   async delete(id: string | number): Promise<boolean> {
-    return this.baseRepository.delete(id);
-  }
-
-  async findByCondition(condition: Partial<T>): Promise<T[]> {
-    return this.baseRepository.findByCondition(condition);
+    const result = await this.baseRepository.delete(id);
+    console.log(
+      `Invalidating cache for all entities with key: ${this.getCacheKey()}`,
+    );
+    await this.cacheManager.del(this.getCacheKey()); // Invalidate all
+    console.log(
+      `Invalidating cache for specific entity with key: ${this.getCacheKey(id)}`,
+    );
+    await this.cacheManager.del(this.getCacheKey(id)); // Invalidate specific
+    return result;
   }
 
   async findOne(condition: Partial<T>): Promise<T | null> {
-    return this.baseRepository.findOne(condition);
+    const cacheKey = this.getCacheKey(condition);
+    console.log(`Attempting to get from cache with key: ${cacheKey}`);
+    const cachedData = await this.cacheManager.get<T>(cacheKey);
+    if (cachedData) {
+      console.log(`Cache hit for key: ${cacheKey}`);
+      return cachedData;
+    }
+    console.log(`Cache miss for key: ${cacheKey}. Fetching from repository.`);
+    const data = await this.baseRepository.findOne(condition);
+    if (data) {
+      console.log(
+        `Data fetched from repository. Setting cache for key: ${cacheKey}`,
+      );
+      await this.cacheManager.set(cacheKey, data, 60 * 60 * 1000);
+    } else {
+      console.log(`No data found from repository for key: ${cacheKey}`);
+    }
+    return data;
   }
 
   async count(condition?: Partial<T>): Promise<number> {
@@ -50,6 +145,35 @@ export abstract class BaseService<T> {
     limit: number = 10,
     condition?: Partial<T>,
   ): Promise<{ data: T[]; total: number; page: number; limit: number }> {
-    return this.baseRepository.findWithPagination(page, limit, condition);
+    const cacheKey = this.getPaginationCacheKey(page, limit, condition);
+
+    console.log(`Attempting to get paginated cache with key: ${cacheKey}`);
+    const cachedData = await this.cacheManager.get<{
+      data: T[];
+      total: number;
+    }>(cacheKey);
+
+    if (cachedData) {
+      console.log(`Paginated cache hit for key: ${cacheKey}`);
+      return { ...cachedData, page, limit };
+    }
+
+    console.log(
+      `Paginated cache miss for key: ${cacheKey}. Fetching from repository.`,
+    );
+    const result = await this.baseRepository.findWithPagination(
+      page,
+      limit,
+      condition,
+    );
+
+    console.log(`Setting paginated cache for key: ${cacheKey}`);
+    await this.cacheManager.set(
+      cacheKey,
+      { data: result.data, total: result.total },
+      60 * 60 * 1000,
+    );
+
+    return result;
   }
 }

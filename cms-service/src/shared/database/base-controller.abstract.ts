@@ -1,7 +1,6 @@
 import { Body, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { BaseService } from './base-service.abstract';
 import { DeepPartial } from 'typeorm';
-import { ApiBearerAuth } from '@nestjs/swagger';
 
 export abstract class BaseController<
   T,
