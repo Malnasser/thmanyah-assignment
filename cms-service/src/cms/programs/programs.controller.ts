@@ -17,11 +17,12 @@ import {
   ApiTags,
   ApiBody,
   ApiParam,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Program } from './entities/program.entity';
 import { BaseController } from '../../shared/database/base-controller.abstract';
 
-@ApiTags('programs')
+@ApiTags('Programs')
 @Controller('programs')
 export class ProgramsController extends BaseController<
   Program,
@@ -41,6 +42,7 @@ export class ProgramsController extends BaseController<
     type: Program,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiBearerAuth()
   async create(@Body() createProgramDto: CreateProgramDto): Promise<Program> {
     return super.create(createProgramDto);
   }
@@ -52,6 +54,7 @@ export class ProgramsController extends BaseController<
     description: 'Return all programs.',
     type: [Program],
   })
+  @ApiBearerAuth()
   async findAll(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
@@ -67,6 +70,7 @@ export class ProgramsController extends BaseController<
     description: 'Return program by id.',
     type: Program,
   })
+  @ApiBearerAuth()
   async findOne(@Param('id') id: string): Promise<Program | null> {
     return super.findOne(id);
   }
@@ -80,6 +84,7 @@ export class ProgramsController extends BaseController<
     description: 'The program has been successfully updated.',
     type: Program,
   })
+  @ApiBearerAuth()
   async update(
     @Param('id') id: string,
     @Body() updateProgramDto: UpdateProgramDto,
@@ -94,6 +99,7 @@ export class ProgramsController extends BaseController<
     status: 200,
     description: 'The program has been successfully deleted.',
   })
+  @ApiBearerAuth()
   async remove(@Param('id') id: string): Promise<boolean> {
     return super.remove(id);
   }

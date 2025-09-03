@@ -1,13 +1,16 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { CmsModule } from './cms/cms.module';
 import { SharedModule } from './shared/shared.module';
-import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Program } from './cms/programs/entities/program.entity';
 import { Episode } from './cms/episodes/entities/episode.entity';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
+import { AuthModule } from './auth/auth.module';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { User } from './auth/entities/user.entity';
 
 @Module({
   imports: [
@@ -36,7 +39,7 @@ import { redisStore } from 'cache-manager-redis-store';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Program, Episode],
+        entities: [Program, Episode, User],
         migrations: [__dirname + '/../migrations/*.ts'],
         synchronize: false,
         logging: process.env.NODE_ENV == 'development',
@@ -45,6 +48,11 @@ import { redisStore } from 'cache-manager-redis-store';
     }),
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

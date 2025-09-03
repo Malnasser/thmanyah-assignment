@@ -17,6 +17,7 @@ import {
   ApiTags,
   ApiBody,
   ApiParam,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Episode } from './entities/episode.entity';
 import { BaseController } from '../../shared/database/base-controller.abstract';
@@ -41,6 +42,7 @@ export class EpisodesController extends BaseController<
     type: Episode,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiBearerAuth()
   async create(@Body() createEpisodeDto: CreateEpisodeDto): Promise<Episode> {
     return super.create(createEpisodeDto);
   }
@@ -52,6 +54,7 @@ export class EpisodesController extends BaseController<
     description: 'Return all episodes.',
     type: [Episode],
   })
+  @ApiBearerAuth()
   async findAll(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
@@ -67,6 +70,7 @@ export class EpisodesController extends BaseController<
     description: 'Return episode by id.',
     type: Episode,
   })
+  @ApiBearerAuth()
   async findOne(@Param('id') id: string): Promise<Episode | null> {
     return super.findOne(id);
   }
@@ -80,6 +84,7 @@ export class EpisodesController extends BaseController<
     description: 'The episode has been successfully updated.',
     type: Episode,
   })
+  @ApiBearerAuth()
   async update(
     @Param('id') id: string,
     @Body() updateEpisodeDto: UpdateEpisodeDto,
@@ -94,6 +99,7 @@ export class EpisodesController extends BaseController<
     status: 200,
     description: 'The episode has been successfully deleted.',
   })
+  @ApiBearerAuth()
   async remove(@Param('id') id: string): Promise<boolean> {
     return super.remove(id);
   }

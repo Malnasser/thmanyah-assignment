@@ -2,6 +2,7 @@ import { DataSource } from 'typeorm';
 import { Program } from './cms/programs/entities/program.entity';
 import { Episode } from './cms/episodes/entities/episode.entity';
 import { config } from 'dotenv';
+import { User } from './auth/entities/user.entity';
 
 config();
 
@@ -12,7 +13,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [Program, Episode],
+  entities: [Program, Episode, User],
   migrations: [__dirname + '/../migrations/*.ts'],
   synchronize: false,
   logging: process.env.NODE_ENV == 'development',
