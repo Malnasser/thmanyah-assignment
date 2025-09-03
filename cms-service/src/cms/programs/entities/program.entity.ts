@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Episode } from '../../episodes/entities/episode.entity';
+import { Language } from '../../common/enums/language.enum';
 
 @Entity('programs')
 export class Program {
@@ -15,8 +16,8 @@ export class Program {
   @Column()
   category: string; // movie, podcast, documentary, etc.
 
-  @Column({ default: 'en' })
-  language: string; // ISO code, e.g., 'en', 'ar'
+  @Column({ type: 'enum', enum: Language, default: Language.AR })
+  language: Language; // ISO code, e.g., 'en', 'ar'
 
   @Column({ type: 'int', nullable: true })
   duration: number; // seconds
