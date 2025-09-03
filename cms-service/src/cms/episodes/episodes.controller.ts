@@ -10,24 +10,38 @@ import {
 import { EpisodesService } from './episodes.service';
 import { CreateEpisodeDto } from './dto/create-episode.dto';
 import { UpdateEpisodeDto } from './dto/update-episode.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
 import { Episode } from './entities/episode.entity';
+import { BaseController } from '../../shared/database/base-controller.abstract';
 
 @ApiTags('episodes')
 @Controller('episodes')
-export class EpisodesController {
-  constructor(private readonly episodesService: EpisodesService) {}
+export class EpisodesController extends BaseController<
+  Episode,
+  CreateEpisodeDto,
+  UpdateEpisodeDto
+> {
+  constructor(private readonly episodesService: EpisodesService) {
+    super(episodesService);
+  }
 
   @Post()
   @ApiOperation({ summary: 'Create episode' })
+  @ApiBody({ type: CreateEpisodeDto })
   @ApiResponse({
     status: 201,
     description: 'The episode has been successfully created.',
     type: Episode,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  create(@Body() createEpisodeDto: CreateEpisodeDto) {
-    return this.episodesService.create(createEpisodeDto);
+  async create(@Body() createEpisodeDto: CreateEpisodeDto): Promise<Episode> {
+    return super.create(createEpisodeDto);
   }
 
   @Get()
@@ -37,39 +51,46 @@ export class EpisodesController {
     description: 'Return all episodes.',
     type: [Episode],
   })
-  findAll() {
-    return this.episodesService.findAll();
+  async findAll(): Promise<Episode[]> {
+    return super.findAll();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get episode by id' })
+  @ApiParam({ name: 'id', type: String, description: 'Episode ID' })
   @ApiResponse({
     status: 200,
     description: 'Return episode by id.',
     type: Episode,
   })
-  findOne(@Param('id') id: string) {
-    return this.episodesService.findOne(+id);
+  async findOne(@Param('id') id: string): Promise<Episode | null> {
+    return super.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update episode' })
+  @ApiParam({ name: 'id', type: String, description: 'Episode ID' })
+  @ApiBody({ type: UpdateEpisodeDto })
   @ApiResponse({
     status: 200,
     description: 'The episode has been successfully updated.',
     type: Episode,
   })
-  update(@Param('id') id: string, @Body() updateEpisodeDto: UpdateEpisodeDto) {
-    return this.episodesService.update(+id, updateEpisodeDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateEpisodeDto: UpdateEpisodeDto,
+  ): Promise<Episode | null> {
+    return super.update(id, updateEpisodeDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete episode' })
+  @ApiParam({ name: 'id', type: String, description: 'Episode ID' })
   @ApiResponse({
     status: 200,
     description: 'The episode has been successfully deleted.',
   })
-  remove(@Param('id') id: string) {
-    return id; //this.episodesService.remove(+id);
+  async remove(@Param('id') id: string): Promise<boolean> {
+    return super.remove(id);
   }
 }
