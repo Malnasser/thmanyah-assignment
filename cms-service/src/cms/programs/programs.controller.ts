@@ -10,24 +10,38 @@ import {
 import { ProgramsService } from './programs.service';
 import { CreateProgramDto } from './dto/create-program.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
 import { Program } from './entities/program.entity';
+import { BaseController } from '../../shared/database/base-controller.abstract';
 
 @ApiTags('programs')
 @Controller('programs')
-export class ProgramsController {
-  constructor(private readonly programsService: ProgramsService) {}
+export class ProgramsController extends BaseController<
+  Program,
+  CreateProgramDto,
+  UpdateProgramDto
+> {
+  constructor(private readonly programsService: ProgramsService) {
+    super(programsService);
+  }
 
   @Post()
   @ApiOperation({ summary: 'Create program' })
+  @ApiBody({ type: CreateProgramDto })
   @ApiResponse({
     status: 201,
     description: 'The program has been successfully created.',
     type: Program,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  create(@Body() createProgramDto: CreateProgramDto) {
-    return this.programsService.create(createProgramDto);
+  async create(@Body() createProgramDto: CreateProgramDto): Promise<Program> {
+    return super.create(createProgramDto);
   }
 
   @Get()
@@ -37,39 +51,46 @@ export class ProgramsController {
     description: 'Return all programs.',
     type: [Program],
   })
-  findAll() {
-    return this.programsService.findAll();
+  async findAll(): Promise<Program[]> {
+    return super.findAll();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get program by id' })
+  @ApiParam({ name: 'id', type: String, description: 'Program ID' })
   @ApiResponse({
     status: 200,
     description: 'Return program by id.',
     type: Program,
   })
-  findOne(@Param('id') id: string) {
-    return this.programsService.findOne(+id);
+  async findOne(@Param('id') id: string): Promise<Program | null> {
+    return super.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update program' })
+  @ApiParam({ name: 'id', type: String, description: 'Program ID' })
+  @ApiBody({ type: UpdateProgramDto })
   @ApiResponse({
     status: 200,
     description: 'The program has been successfully updated.',
     type: Program,
   })
-  update(@Param('id') id: string, @Body() updateProgramDto: UpdateProgramDto) {
-    return this.programsService.update(+id, updateProgramDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateProgramDto: UpdateProgramDto,
+  ): Promise<Program | null> {
+    return super.update(id, updateProgramDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete program' })
+  @ApiParam({ name: 'id', type: String, description: 'Program ID' })
   @ApiResponse({
     status: 200,
     description: 'The program has been successfully deleted.',
   })
-  remove(@Param('id') id: string) {
-    return id; // this.programsService.remove(+id);
+  async remove(@Param('id') id: string): Promise<boolean> {
+    return super.remove(id);
   }
 }

@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Episode } from '../../episodes/entities/episode.entity';
 import { Language } from '../../common/enums/language.enum';
+import { MediaType } from '../../common/enums/media-type.enum';
 
 @Entity('programs')
 export class Program {
@@ -16,11 +17,11 @@ export class Program {
   @Column()
   category: string; // movie, podcast, documentary, etc.
 
-  @Column({ type: 'enum', enum: Language, default: Language.AR })
-  language: Language; // ISO code, e.g., 'en', 'ar'
+  @Column({ type: 'enum', enum: MediaType, default: MediaType.PODCAST })
+  mediaType: MediaType;
 
-  @Column({ type: 'int', nullable: true })
-  duration: number; // seconds
+  @Column({ type: 'enum', enum: Language, default: Language.AR })
+  language: Language;
 
   @Column({ type: 'timestamp', nullable: true })
   publishDate: Date;
