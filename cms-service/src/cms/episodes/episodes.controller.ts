@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { EpisodesService } from './episodes.service';
 import { CreateEpisodeDto } from './dto/create-episode.dto';
@@ -51,8 +52,11 @@ export class EpisodesController extends BaseController<
     description: 'Return all episodes.',
     type: [Episode],
   })
-  async findAll(): Promise<Episode[]> {
-    return super.findAll();
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ): Promise<{ data: Episode[]; total: number; page: number; limit: number }> {
+    return super.findAll(page, limit);
   }
 
   @Get(':id')

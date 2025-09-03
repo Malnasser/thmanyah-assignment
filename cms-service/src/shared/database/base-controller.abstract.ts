@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { BaseService } from './base-service.abstract';
 import { DeepPartial } from 'typeorm';
 
@@ -19,8 +19,11 @@ export abstract class BaseController<
   }
 
   @Get()
-  async findAll(): Promise<T[]> {
-    return this.baseService.findAll();
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ): Promise<{ data: T[]; total: number; page: number; limit: number }> {
+    return this.baseService.findWithPagination(page, limit);
   }
 
   @Get(':id')

@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Query,
   Post,
   Body,
   Patch,
@@ -51,8 +52,11 @@ export class ProgramsController extends BaseController<
     description: 'Return all programs.',
     type: [Program],
   })
-  async findAll(): Promise<Program[]> {
-    return super.findAll();
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ): Promise<{ data: Program[]; total: number; page: number; limit: number }> {
+    return super.findAll(page, limit);
   }
 
   @Get(':id')
