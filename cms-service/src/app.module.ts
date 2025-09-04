@@ -4,12 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
-import { AuthModule } from './auth/auth.module';
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { CmsModule } from './collections/cms.module';
 import { Program } from './collections/programs/entities/program.entity';
 import { User } from './collections/users/entities/user.entity';
 import { Episode } from './collections/episodes/entities/episode.entity';
+import { CoreModule } from './core/core.module';
+import { JwtAuthGuard } from './core/auth/guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -30,7 +30,7 @@ import { Episode } from './collections/episodes/entities/episode.entity';
       isGlobal: true,
     }),
     CmsModule,
-    AuthModule,
+    CoreModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -57,3 +57,4 @@ import { Episode } from './collections/episodes/entities/episode.entity';
   ],
 })
 export class AppModule {}
+
