@@ -42,22 +42,6 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
-  @Post('refresh')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Refresh access token' })
-  @ApiResponse({
-    status: 200,
-    description: 'Token refreshed successfully',
-    type: AuthResponseDto,
-  })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiBody({ schema: { properties: { refreshToken: { type: 'string' } } } })
-  async refreshToken(
-    @Body('refreshToken') refreshToken: string,
-  ): Promise<AuthResponseDto> {
-    return this.authService.refreshToken(refreshToken);
-  }
-
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
@@ -86,7 +70,6 @@ export class AuthController {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      roles: user.roles,
     };
   }
 }

@@ -23,7 +23,7 @@ export class User {
   @Column({ nullable: true })
   lastName: string;
 
-  @Column('simple-array', { default: 'user' })
+  @Column({ type: 'simple-array', default: 'user' })
   roles: string[];
 
   @Column({ nullable: true })
