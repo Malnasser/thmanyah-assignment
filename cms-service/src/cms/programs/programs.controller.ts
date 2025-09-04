@@ -58,8 +58,11 @@ export class ProgramsController extends BaseController<
   async findAll(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
+    @Query('filter') filter?: string,
+    @Query('select') select?: string,
+    @Query('sort') sort?: string,
   ): Promise<{ data: Program[]; total: number; page: number; limit: number }> {
-    return super.findAll(page, limit);
+    return super.findAll(page, limit, filter, select, sort);
   }
 
   @Get(':id')

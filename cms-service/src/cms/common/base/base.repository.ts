@@ -65,11 +65,15 @@ export abstract class BaseRepository<T> {
     page: number = 1,
     limit: number = 10,
     condition?: Partial<T>,
+    select?: (keyof T)[] | undefined,
+    sort?: FindOptionsOrder<T>,
   ): Promise<{ data: T[]; total: number; page: number; limit: number }> {
     const [data, total] = await this.repository.findAndCount({
       where: condition as FindOptionsWhere<T>,
       skip: (page - 1) * limit,
       take: limit,
+      select,
+      order: sort,
     });
 
     return {

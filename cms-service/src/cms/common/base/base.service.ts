@@ -1,4 +1,4 @@
-import { FindManyOptions, DeepPartial } from 'typeorm';
+import { FindManyOptions, DeepPartial, FindOptionsOrder } from 'typeorm';
 import { BaseRepository } from './base.repository';
 import { Inject } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -36,10 +36,14 @@ export abstract class BaseService<T> {
     page: number,
     limit: number,
     condition?: Partial<T>,
+    select?: (keyof T)[] | undefined,
+    sort?: FindOptionsOrder<T>,
   ): string {
     const entityName = this.entityType.name.toLowerCase();
     const conditionKey = condition ? JSON.stringify(condition) : 'all';
-    return `${entityName}_page_${page}_limit_${limit}_${conditionKey}`;
+    const selectKey = select && select.length > 0 ? select.join(',') : 'all';
+    const sortKey = sort ? JSON.stringify(sort) : 'all';
+    return `${entityName}_page_${page}_limit_${limit}_${conditionKey}_select_${selectKey}_sort_${sortKey}`;
   }
 
   async create(entity: DeepPartial<T>): Promise<T> {
@@ -145,8 +149,16 @@ export abstract class BaseService<T> {
     page: number = 1,
     limit: number = 10,
     condition?: Partial<T>,
+    select?: (keyof T)[] | undefined,
+    sort?: FindOptionsOrder<T>,
   ): Promise<{ data: T[]; total: number; page: number; limit: number }> {
-    const cacheKey = this.getPaginationCacheKey(page, limit, condition);
+    const cacheKey = this.getPaginationCacheKey(
+      page,
+      limit,
+      condition,
+      select,
+      sort,
+    );
 
     console.log(`Attempting to get paginated cache with key: ${cacheKey}`);
     const cachedData = await this.cacheManager.get<{
@@ -166,6 +178,8 @@ export abstract class BaseService<T> {
       page,
       limit,
       condition,
+      select,
+      sort,
     );
 
     console.log(`Setting paginated cache for key: ${cacheKey}`);
