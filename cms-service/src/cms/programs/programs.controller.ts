@@ -45,7 +45,7 @@ export class ProgramsController extends BaseController<
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiBearerAuth()
   async create(@Body() createProgramDto: CreateProgramDto): Promise<Program> {
-    return super.create(createProgramDto);
+    return super._create(createProgramDto);
   }
 
   @Get()
@@ -54,7 +54,7 @@ export class ProgramsController extends BaseController<
   async findAll(
     @Query() query: PaginationQueryDto,
   ): Promise<{ data: Program[]; total: number; page: number; limit: number }> {
-    return super.findAll(query);
+    return super._findAll(query);
   }
 
   @Get(':id')
@@ -70,7 +70,7 @@ export class ProgramsController extends BaseController<
     @Param('id') id: string,
     @Query('select') select?: string,
   ): Promise<Program | null> {
-    return super.findOne(id, select);
+    return super._findOne(id, select);
   }
 
   @Patch(':id')
@@ -87,7 +87,7 @@ export class ProgramsController extends BaseController<
     @Param('id') id: string,
     @Body() updateProgramDto: UpdateProgramDto,
   ): Promise<Program | null> {
-    return super.update(id, updateProgramDto);
+    return super._update(id, updateProgramDto);
   }
 
   @Delete(':id')
@@ -99,6 +99,6 @@ export class ProgramsController extends BaseController<
   })
   @ApiBearerAuth()
   async remove(@Param('id') id: string): Promise<boolean> {
-    return super.remove(id);
+    return super._remove(id);
   }
 }

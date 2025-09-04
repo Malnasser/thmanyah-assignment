@@ -45,7 +45,7 @@ export class EpisodesController extends BaseController<
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiBearerAuth()
   async create(@Body() createEpisodeDto: CreateEpisodeDto): Promise<Episode> {
-    return super.create(createEpisodeDto);
+    return super._create(createEpisodeDto);
   }
 
   @Get()
@@ -59,7 +59,7 @@ export class EpisodesController extends BaseController<
   async findAll(
     @Query() query: PaginationQueryDto,
   ): Promise<{ data: Episode[]; total: number; page: number; limit: number }> {
-    return super.findAll(query);
+    return super._findAll(query);
   }
 
   @Get(':id')
@@ -72,7 +72,7 @@ export class EpisodesController extends BaseController<
   })
   @ApiBearerAuth()
   async findOne(@Param('id') id: string): Promise<Episode | null> {
-    return super.findOne(id);
+    return super._findOne(id);
   }
 
   @Patch(':id')
@@ -89,7 +89,7 @@ export class EpisodesController extends BaseController<
     @Param('id') id: string,
     @Body() updateEpisodeDto: UpdateEpisodeDto,
   ): Promise<Episode | null> {
-    return super.update(id, updateEpisodeDto);
+    return super._update(id, updateEpisodeDto);
   }
 
   @Delete(':id')
@@ -101,6 +101,6 @@ export class EpisodesController extends BaseController<
   })
   @ApiBearerAuth()
   async remove(@Param('id') id: string): Promise<boolean> {
-    return super.remove(id);
+    return super._remove(id);
   }
 }

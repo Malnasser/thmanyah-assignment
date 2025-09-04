@@ -1,38 +1,23 @@
-import {
-  BadRequestException,
-  Body,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common';
-import { BaseService } from './base.service';
-import { DeepPartial, FindOptionsOrder } from 'typeorm';
+import { DeepPartial } from 'typeorm';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
+import { IBaseService } from './interfaces/base-service.interface';
+import { BadRequestException } from '@nestjs/common';
 
 export abstract class BaseController<
   T,
   CreateDto extends DeepPartial<T>,
   UpdateDto extends Partial<T>,
 > {
-  protected baseService: BaseService<T>;
+  constructor(protected baseService: IBaseService<T, CreateDto, UpdateDto>) {}
 
-  constructor(baseService: BaseService<T>) {
-    this.baseService = baseService;
-  }
-
-  @Post()
-  async create(@Body() createDto: CreateDto): Promise<T> {
+  protected _create(createDto: CreateDto): Promise<T> {
     return this.baseService.create(createDto);
   }
 
-  @Get()
-  async findAll(
-    @Query() query: PaginationQueryDto,
+  protected _findAll(
+    query: PaginationQueryDto,
   ): Promise<{ data: T[]; total: number; page: number; limit: number }> {
-    const { page, limit, filter, select, sort } = query;
+    const { page = 1, limit = 10, filter, select, sort } = query;
     let filterObject: { [key: string]: any } | undefined;
     if (filter) {
       try {
@@ -86,15 +71,11 @@ export abstract class BaseController<
       limit,
       filterObject as Partial<T>,
       selectFields,
-      sortObject as FindOptionsOrder<T>,
+      sortObject,
     );
   }
 
-  @Get(':id')
-  async findOne(
-    @Param('id') id: string,
-    @Query('select') select?: string,
-  ): Promise<T | null> {
+  protected _findOne(id: string, select?: string): Promise<T | null> {
     let selectFields: (keyof T)[] | undefined;
     if (select) {
       const fields = select
@@ -108,16 +89,11 @@ export abstract class BaseController<
     return this.baseService.findById(id, selectFields);
   }
 
-  @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateDto: UpdateDto,
-  ): Promise<T | null> {
+  protected _update(id: string, updateDto: UpdateDto): Promise<T | null> {
     return this.baseService.update(id, updateDto);
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: string): Promise<boolean> {
+  protected _remove(id: string): Promise<boolean> {
     return this.baseService.delete(id);
   }
 }

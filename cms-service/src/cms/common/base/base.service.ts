@@ -1,18 +1,17 @@
 import { FindManyOptions, DeepPartial, FindOptionsOrder } from 'typeorm';
-import { BaseRepository } from './base.repository';
 import { Inject } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { IBaseService } from './interfaces/base-service.interface';
+import { IBaseRepository } from './interfaces/base-repoitory.interface';
 
-// TODO: move this abstract to a proper file
-// TODO: Implement interfaces for the three abstract
-export abstract class BaseService<T> {
-  protected baseRepository: BaseRepository<T>;
+export abstract class BaseService<T> implements IBaseService<T> {
+  protected baseRepository: IBaseRepository<T>;
   protected cacheManager: Cache;
   protected entityType: new () => T;
 
   constructor(
-    baseRepository: BaseRepository<T>,
+    baseRepository: IBaseRepository<T>,
     @Inject(CACHE_MANAGER) cacheManager: Cache,
     entityType: new () => T,
   ) {
@@ -154,18 +153,18 @@ export abstract class BaseService<T> {
   }
 
   async findWithPagination(
-    page: number = 1,
-    limit: number = 10,
-    condition?: Partial<T>,
+    page: number,
+    limit: number,
+    filter?: Partial<T>,
     select?: (keyof T)[] | undefined,
-    sort?: FindOptionsOrder<T>,
+    sort?: Record<string, 'ASC' | 'DESC'>,
   ): Promise<{ data: T[]; total: number; page: number; limit: number }> {
     const cacheKey = this.getPaginationCacheKey(
       page,
       limit,
-      condition,
+      filter,
       select,
-      sort,
+      sort as FindOptionsOrder<T>,
     );
 
     console.log(`Attempting to get paginated cache with key: ${cacheKey}`);
@@ -185,9 +184,9 @@ export abstract class BaseService<T> {
     const result = await this.baseRepository.findWithPagination(
       page,
       limit,
-      condition,
+      filter,
       select,
-      sort,
+      sort as FindOptionsOrder<T>,
     );
 
     console.log(`Setting paginated cache for key: ${cacheKey}`);
@@ -197,6 +196,6 @@ export abstract class BaseService<T> {
       60 * 60 * 1000,
     );
 
-    return result;
+    return { ...result, page, limit };
   }
 }

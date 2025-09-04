@@ -5,8 +5,9 @@ import {
   DeepPartial,
   FindOptionsOrder,
 } from 'typeorm';
+import { IBaseRepository } from './interfaces/base-repoitory.interface';
 
-export abstract class BaseRepository<T> {
+export abstract class BaseRepository<T> implements IBaseRepository<T> {
   protected repository: Repository<T>;
 
   constructor(repository: Repository<T>) {
