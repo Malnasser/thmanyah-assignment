@@ -18,9 +18,12 @@ import {
   ApiBody,
   ApiParam,
   ApiBearerAuth,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { Program } from './entities/program.entity';
 import { BaseController } from '../common/base/base.controller';
+import { PaginationQueryDto } from '../common/base/dto/pagination-query.dto';
+import { query } from 'express';
 
 @ApiTags('Programs')
 @Controller('programs')
@@ -49,20 +52,11 @@ export class ProgramsController extends BaseController<
 
   @Get()
   @ApiOperation({ summary: 'Get all programs' })
-  @ApiResponse({
-    status: 200,
-    description: 'Return all programs.',
-    type: [Program],
-  })
   @ApiBearerAuth()
   async findAll(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
-    @Query('filter') filter?: string,
-    @Query('select') select?: string,
-    @Query('sort') sort?: string,
+    @Query() query: PaginationQueryDto,
   ): Promise<{ data: Program[]; total: number; page: number; limit: number }> {
-    return super.findAll(page, limit, filter, select, sort);
+    return super.findAll(query);
   }
 
   @Get(':id')

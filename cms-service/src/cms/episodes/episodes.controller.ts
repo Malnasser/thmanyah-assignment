@@ -21,8 +21,9 @@ import {
 } from '@nestjs/swagger';
 import { Episode } from './entities/episode.entity';
 import { BaseController } from '../common/base/base.controller';
+import { PaginationQueryDto } from '../common/base/dto/pagination-query.dto';
 
-@ApiTags('episodes')
+@ApiTags('Episodes')
 @Controller('episodes')
 export class EpisodesController extends BaseController<
   Episode,
@@ -56,13 +57,9 @@ export class EpisodesController extends BaseController<
   })
   @ApiBearerAuth()
   async findAll(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
-    @Query('filter') filter?: string,
-    @Query('select') select?: string,
-    @Query('sort') sort?: string,
+    @Query() query: PaginationQueryDto,
   ): Promise<{ data: Episode[]; total: number; page: number; limit: number }> {
-    return super.findAll(page, limit, filter, select, sort);
+    return super.findAll(query);
   }
 
   @Get(':id')

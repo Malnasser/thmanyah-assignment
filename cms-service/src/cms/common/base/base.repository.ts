@@ -3,6 +3,7 @@ import {
   FindOptionsWhere,
   FindManyOptions,
   DeepPartial,
+  FindOptionsOrder,
 } from 'typeorm';
 
 export abstract class BaseRepository<T> {

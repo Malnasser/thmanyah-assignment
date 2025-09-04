@@ -9,7 +9,9 @@ import {
   Query,
 } from '@nestjs/common';
 import { BaseService } from './base.service';
-import { DeepPartial } from 'typeorm';
+import { DeepPartial, FindOptionsOrder } from 'typeorm';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
+import { query } from 'express';
 
 export abstract class BaseController<
   T,
@@ -29,18 +31,23 @@ export abstract class BaseController<
 
   @Get()
   async findAll(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
-    @Query('filter') filter?: string,
-    @Query('select') select?: string,
-    @Query('sort') sort?: string,
+    @Query() query: PaginationQueryDto,
   ): Promise<{ data: T[]; total: number; page: number; limit: number }> {
-    let filterObject;
+    const { page, limit, filter, select, sort } = query;
+    let filterObject: { [key: string]: any } | undefined;
     if (filter) {
       try {
-        filterObject = JSON.parse(filter);
+        filterObject = filter.split(',').reduce((acc, part) => {
+          const [key, value] = part.split(':');
+          if (key && value) {
+            acc[key.trim()] = value.trim();
+          }
+          return acc;
+        }, {});
       } catch (e) {
-        throw new BadRequestException('Invalid filter query parameter');
+        throw new BadRequestException(
+          'Invalid filter query parameter. Expected format: key:value,key:value',
+        );
       }
     }
 
@@ -55,21 +62,32 @@ export abstract class BaseController<
       }
     }
 
-    let sortObject;
+    let sortObject: { [key: string]: 'ASC' | 'DESC' } | undefined;
     if (sort) {
       try {
-        sortObject = JSON.parse(sort);
+        sortObject = sort.split(',').reduce((acc, part) => {
+          const [key, value] = part.split(':');
+          if (key && value) {
+            const direction = value.trim().toUpperCase();
+            if (direction === 'ASC' || direction === 'DESC') {
+              acc[key.trim()] = direction;
+            }
+          }
+          return acc;
+        }, {});
       } catch (e) {
-        throw new BadRequestException('Invalid sort query parameter');
+        throw new BadRequestException(
+          'Invalid sort query parameter. Expected format: key:direction,key:direction',
+        );
       }
     }
 
     return this.baseService.findWithPagination(
       page,
       limit,
-      filterObject,
+      filterObject as Partial<T>,
       selectFields,
-      sortObject,
+      sortObject as FindOptionsOrder<T>,
     );
   }
 
