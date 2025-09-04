@@ -18,10 +18,14 @@ export abstract class BaseRepository<T> {
     return await this.repository.save(newEntity);
   }
 
-  async findById(id: string | number): Promise<T | null> {
+  async findById(
+    id: string | number,
+    select?: (keyof T)[] | undefined,
+  ): Promise<T | null> {
     const primaryKey = this.repository.metadata.primaryColumns[0].propertyName;
     return await this.repository.findOne({
       where: { [primaryKey]: id } as FindOptionsWhere<T>,
+      select: select,
     });
   }
 

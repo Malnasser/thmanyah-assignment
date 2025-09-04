@@ -18,12 +18,10 @@ import {
   ApiBody,
   ApiParam,
   ApiBearerAuth,
-  ApiQuery,
 } from '@nestjs/swagger';
 import { Program } from './entities/program.entity';
 import { BaseController } from '../common/base/base.controller';
 import { PaginationQueryDto } from '../common/base/dto/pagination-query.dto';
-import { query } from 'express';
 
 @ApiTags('Programs')
 @Controller('programs')
@@ -68,8 +66,11 @@ export class ProgramsController extends BaseController<
     type: Program,
   })
   @ApiBearerAuth()
-  async findOne(@Param('id') id: string): Promise<Program | null> {
-    return super.findOne(id);
+  async findOne(
+    @Param('id') id: string,
+    @Query('select') select?: string,
+  ): Promise<Program | null> {
+    return super.findOne(id, select);
   }
 
   @Patch(':id')

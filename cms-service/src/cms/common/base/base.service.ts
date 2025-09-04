@@ -21,15 +21,20 @@ export abstract class BaseService<T> {
     this.entityType = entityType;
   }
 
-  protected getCacheKey(id?: string | number | Partial<T>): string {
+  protected getCacheKey(
+    id?: string | number | Partial<T>,
+    select?: (keyof T)[] | undefined,
+  ): string {
     const entityName = this.entityType.name.toLowerCase();
     const key = id
       ? typeof id === 'object'
         ? `${entityName}_${JSON.stringify(id)}`
         : `${entityName}_${id}`
       : `all_${entityName}s`;
-    console.log(`Generated cache key: ${key}`);
-    return key;
+    const selectKey = select && select.length > 0 ? select.join(',') : 'all';
+    const finalKey = `${key}_select_${selectKey}`;
+    console.log(`Generated cache key: ${finalKey}`);
+    return finalKey;
   }
 
   protected getPaginationCacheKey(
@@ -52,8 +57,11 @@ export abstract class BaseService<T> {
     return createdEntity;
   }
 
-  async findById(id: string | number): Promise<T | null> {
-    const cacheKey = this.getCacheKey(id);
+  async findById(
+    id: string | number,
+    select?: (keyof T)[] | undefined,
+  ): Promise<T | null> {
+    const cacheKey = this.getCacheKey(id, select);
     console.log(`Attempting to get from cache with key: ${cacheKey}`);
     const cachedData = await this.cacheManager.get<T>(cacheKey);
     if (cachedData) {
@@ -61,7 +69,7 @@ export abstract class BaseService<T> {
       return cachedData;
     }
     console.log(`Cache miss for key: ${cacheKey}. Fetching from repository.`);
-    const data = await this.baseRepository.findById(id);
+    const data = await this.baseRepository.findById(id, select);
     if (data) {
       console.log(
         `Data fetched from repository. Setting cache for key: ${cacheKey}`,

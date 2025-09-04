@@ -11,7 +11,6 @@ import {
 import { BaseService } from './base.service';
 import { DeepPartial, FindOptionsOrder } from 'typeorm';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
-import { query } from 'express';
 
 export abstract class BaseController<
   T,
@@ -92,8 +91,21 @@ export abstract class BaseController<
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<T | null> {
-    return this.baseService.findById(id);
+  async findOne(
+    @Param('id') id: string,
+    @Query('select') select?: string,
+  ): Promise<T | null> {
+    let selectFields: (keyof T)[] | undefined;
+    if (select) {
+      const fields = select
+        .split(',')
+        .map((f) => f.trim())
+        .filter(Boolean);
+      if (fields.length > 0) {
+        selectFields = fields as (keyof T)[];
+      }
+    }
+    return this.baseService.findById(id, selectFields);
   }
 
   @Patch(':id')
