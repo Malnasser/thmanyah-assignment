@@ -1,8 +1,8 @@
 import { DataSource } from 'typeorm';
-import { Program } from './cms/programs/entities/program.entity';
-import { Episode } from './cms/episodes/entities/episode.entity';
+import { Program } from './collections/programs/entities/program.entity';
+import { Episode } from './collections/episodes/entities/episode.entity';
 import { config } from 'dotenv';
-import { User } from './auth/entities/user.entity';
+import { User } from './collections/users/entities/user.entity';
 
 config();
 

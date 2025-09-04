@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Language } from '../../common/enums/language.enum';
-import { MediaType } from 'src/cms/common/enums/media-type.enum';
+import { Language } from 'src/collections/common/enums/language.enum';
+import { MediaType } from 'src/collections/common/enums/media-type.enum';
 
 export class CreateProgramDto {
   @ApiProperty()
@@ -10,7 +10,7 @@ export class CreateProgramDto {
   description: string;
 
   @ApiProperty({ enum: MediaType })
-  mediaType: MediaType;
+  mediatype: MediaType;
 
   @ApiProperty()
   category: string;
@@ -19,5 +19,5 @@ export class CreateProgramDto {
   language: Language;
 
   @ApiProperty()
-  publishDate: Date;
+  publishdate: Date;
 }

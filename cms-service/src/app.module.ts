@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
-import { CmsModule } from './cms/cms.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Program } from './cms/programs/entities/program.entity';
-import { Episode } from './cms/episodes/entities/episode.entity';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
-import { User } from './auth/entities/user.entity';
+import { CmsModule } from './collections/cms.module';
+import { Program } from './collections/programs/entities/program.entity';
+import { User } from './collections/users/entities/user.entity';
+import { Episode } from './collections/episodes/entities/episode.entity';
 
 @Module({
   imports: [
@@ -40,7 +40,7 @@ import { User } from './auth/entities/user.entity';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Program, Episode, User],
+        entities: [Program, User, Episode],
         migrations: [__dirname + '/../migrations/*.ts'],
         synchronize: false,
         logging: process.env.NODE_ENV == 'development',

@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AuthService } from './auth/auth.service';
 import { ConfigService } from '@nestjs/config';
+import { UsersService } from './collections/users/users.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,14 +24,16 @@ async function bootstrap() {
   // Bootstrap default user
   const authService = app.get(AuthService);
   const configService = app.get(ConfigService);
+  const usersService = app.get(UsersService);
 
-  const usersCount = await authService.getUsersCount();
+  const superAdminUsername = configService.get<string>(
+    'SUPER_ADMIN_USERNAME',
+    'root@example.com',
+  );
 
-  if (usersCount === 0) {
-    const superAdminUsername = configService.get<string>(
-      'SUPER_ADMIN_USERNAME',
-      'root@example.com',
-    );
+  const adminUser = await usersService.findOne({ email: superAdminUsername });
+
+  if (!adminUser) {
     const superAdminPassword = configService.get<string>(
       'SUPER_ADMIN_PASSWORD',
       'password',
@@ -47,3 +50,4 @@ async function bootstrap() {
   await app.listen(3000);
 }
 bootstrap();
+

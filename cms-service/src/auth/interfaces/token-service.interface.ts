@@ -1,4 +1,4 @@
-import { User } from '../entities/user.entity';
+import { User } from 'src/collections/users/entities/user.entity';
 
 export interface ITokenService {
   generateTokens(
