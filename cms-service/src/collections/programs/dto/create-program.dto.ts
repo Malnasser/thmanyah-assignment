@@ -6,7 +6,10 @@ export class CreateProgramDto {
   @ApiProperty({ example: 'My Awesome Program' })
   title: string;
 
-  @ApiProperty({ example: 'This is a description of my awesome program.', nullable: true })
+  @ApiProperty({
+    example: 'This is a description of my awesome program.',
+    nullable: true,
+  })
   description: string;
 
   @ApiProperty({ enum: MediaType, example: MediaType.PODCAST })
@@ -24,6 +27,9 @@ export class CreateProgramDto {
   @ApiProperty({ example: 'https://example.com/program.mp3', nullable: true })
   fileUrl: string;
 
-  @ApiProperty({ example: 'https://example.com/program-thumbnail.jpg', nullable: true })
+  @ApiProperty({
+    example: 'https://example.com/program-thumbnail.jpg',
+    nullable: true,
+  })
   thumbnailUrl: string;
 }

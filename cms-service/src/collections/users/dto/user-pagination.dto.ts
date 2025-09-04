@@ -14,4 +14,3 @@ export class UserPaginationDto {
   @ApiProperty({ example: 10 })
   limit: number;
 }
-

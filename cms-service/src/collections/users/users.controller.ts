@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Query, Post, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Query,
+  Post,
+  Delete,
+} from '@nestjs/common';
 import { BaseController } from '../common/base/base.controller';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
@@ -29,9 +38,16 @@ export class UsersController extends BaseController<
   @Post()
   @ApiOperation({ summary: 'Create user' })
   @ApiBody({ type: CreateUserDto })
-  @ApiResponse({ status: 201, description: 'User created successfully.', type: User })
+  @ApiResponse({
+    status: 201,
+    description: 'User created successfully.',
+    type: User,
+  })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
-  @ApiResponse({ status: 409, description: 'Conflict (User with email already exists).' })
+  @ApiResponse({
+    status: 409,
+    description: 'Conflict (User with email already exists).',
+  })
   @ApiBearerAuth()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return super._create(createUserDto);
@@ -67,10 +83,20 @@ export class UsersController extends BaseController<
   @Patch(':id')
   @ApiOperation({ summary: 'Update user' })
   @ApiParam({ name: 'id', type: String, description: 'User ID' })
-  @ApiBody({ type: UpdateUserDto, examples: {
-    a: { summary: 'Partial Update', value: { firstName: 'New First Name' } },
-    b: { summary: 'Full Update', value: { firstName: 'New First Name', lastName: 'New Last Name', email: 'new@example.com' } }
-  } })
+  @ApiBody({
+    type: UpdateUserDto,
+    examples: {
+      a: { summary: 'Partial Update', value: { firstName: 'New First Name' } },
+      b: {
+        summary: 'Full Update',
+        value: {
+          firstName: 'New First Name',
+          lastName: 'New Last Name',
+          email: 'new@example.com',
+        },
+      },
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'The user has been successfully updated.',

@@ -14,7 +14,10 @@ export class Program {
   @Column()
   title: string;
 
-  @ApiProperty({ example: 'This is a description of my awesome program.', nullable: true })
+  @ApiProperty({
+    example: 'This is a description of my awesome program.',
+    nullable: true,
+  })
   @Column({ type: 'text', nullable: true })
   description: string;
 
@@ -38,7 +41,10 @@ export class Program {
   @Column({ nullable: true })
   fileUrl: string; // S3 path
 
-  @ApiProperty({ example: 'https://example.com/program-thumbnail.jpg', nullable: true })
+  @ApiProperty({
+    example: 'https://example.com/program-thumbnail.jpg',
+    nullable: true,
+  })
   @Column({ nullable: true })
   thumbnailUrl: string;
 

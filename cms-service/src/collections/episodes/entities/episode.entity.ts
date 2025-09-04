@@ -18,7 +18,10 @@ export class Episode {
   @Column()
   title: string;
 
-  @ApiProperty({ example: 'This is a description of my awesome episode.', nullable: true })
+  @ApiProperty({
+    example: 'This is a description of my awesome episode.',
+    nullable: true,
+  })
   @Column({ type: 'text', nullable: true })
   description: string;
 
@@ -38,7 +41,10 @@ export class Episode {
   @Column({ nullable: true })
   fileUrl: string;
 
-  @ApiProperty({ example: 'https://example.com/episode-thumbnail.jpg', nullable: true })
+  @ApiProperty({
+    example: 'https://example.com/episode-thumbnail.jpg',
+    nullable: true,
+  })
   @Column({ nullable: true })
   thumbnailUrl: string;
 

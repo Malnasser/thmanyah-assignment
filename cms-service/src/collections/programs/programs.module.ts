@@ -9,5 +9,6 @@ import { ProgramRepository } from './programs.repository';
   imports: [TypeOrmModule.forFeature([Program])],
   controllers: [ProgramsController],
   providers: [ProgramsService, ProgramRepository],
+  exports: [ProgramsService],
 })
 export class ProgramsModule {}

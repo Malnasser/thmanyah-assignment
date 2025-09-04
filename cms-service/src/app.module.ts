@@ -10,6 +10,7 @@ import { User } from './collections/users/entities/user.entity';
 import { Episode } from './collections/episodes/entities/episode.entity';
 import { CoreModule } from './core/core.module';
 import { JwtAuthGuard } from './core/auth/guards/jwt-auth.guard';
+import { DiscoveryModule } from './discovery/discovery.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { JwtAuthGuard } from './core/auth/guards/jwt-auth.guard';
       }),
       inject: [ConfigService],
     }),
+    DiscoveryModule,
   ],
   controllers: [],
   providers: [
@@ -57,4 +59,3 @@ import { JwtAuthGuard } from './core/auth/guards/jwt-auth.guard';
   ],
 })
 export class AppModule {}
-
