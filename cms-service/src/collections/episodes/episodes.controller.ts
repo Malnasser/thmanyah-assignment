@@ -42,6 +42,7 @@ export class EpisodesController extends BaseController<
     description: 'The episode has been successfully created.',
     type: Episode,
   })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiBearerAuth()
   async create(@Body() createEpisodeDto: CreateEpisodeDto): Promise<Episode> {
@@ -90,5 +91,18 @@ export class EpisodesController extends BaseController<
     @Body() updateEpisodeDto: UpdateEpisodeDto,
   ): Promise<Episode | null> {
     return super._update(id, updateEpisodeDto);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete episode' })
+  @ApiParam({ name: 'id', type: String, description: 'Episode ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The episode has been successfully deleted.',
+    type: Episode,
+  })
+  @ApiBearerAuth()
+  async remove(@Param('id') id: string): Promise<Episode | null> {
+    return super._remove(id);
   }
 }
