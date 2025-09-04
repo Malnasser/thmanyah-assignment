@@ -1,5 +1,5 @@
 import { Body, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
-import { BaseService } from './base-service.abstract';
+import { BaseService } from './base.service';
 import { DeepPartial } from 'typeorm';
 
 export abstract class BaseController<

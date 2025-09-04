@@ -20,7 +20,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Episode } from './entities/episode.entity';
-import { BaseController } from '../../shared/database/base-controller.abstract';
+import { BaseController } from '../common/base/base.controller';
 
 @ApiTags('episodes')
 @Controller('episodes')

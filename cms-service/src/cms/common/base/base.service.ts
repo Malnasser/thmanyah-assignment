@@ -1,10 +1,11 @@
 import { FindManyOptions, DeepPartial } from 'typeorm';
-import { BaseRepository } from './base-repository.abstract';
+import { BaseRepository } from './base.repository';
 import { Inject } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 
 // TODO: move this abstract to a proper file
+// TODO: Implement interfaces for the three abstract
 export abstract class BaseService<T> {
   protected baseRepository: BaseRepository<T>;
   protected cacheManager: Cache;

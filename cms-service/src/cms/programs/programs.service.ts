@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { BaseService } from '../../shared/database/base-service.abstract';
+import { BaseService } from '../common/base/base.service';
 import { Program } from './entities/program.entity';
 import { ProgramRepository } from './programs.repository';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
