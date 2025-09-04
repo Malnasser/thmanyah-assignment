@@ -110,17 +110,24 @@ export abstract class BaseService<T> implements IBaseService<T> {
     return updatedEntity;
   }
 
-  async delete(id: string | number): Promise<boolean> {
+  async delete(id: string | number): Promise<T | null> {
+    const entityToDelete = await this.baseRepository.findById(id);
+    if (!entityToDelete) {
+      return null;
+    }
     const result = await this.baseRepository.delete(id);
-    console.log(
-      `Invalidating cache for all entities with key: ${this.getCacheKey()}`,
-    );
-    await this.cacheManager.del(this.getCacheKey()); // Invalidate all
-    console.log(
-      `Invalidating cache for specific entity with key: ${this.getCacheKey(id)}`,
-    );
-    await this.cacheManager.del(this.getCacheKey(id)); // Invalidate specific
-    return result;
+    if (result) {
+      console.log(
+        `Invalidating cache for all entities with key: ${this.getCacheKey()}`,
+      );
+      await this.cacheManager.del(this.getCacheKey()); // Invalidate all
+      console.log(
+        `Invalidating cache for specific entity with key: ${this.getCacheKey(id)}`,
+      );
+      await this.cacheManager.del(this.getCacheKey(id)); // Invalidate specific
+      return entityToDelete;
+    }
+    return null;
   }
 
   async findOne(condition: Partial<T>): Promise<T | null> {

@@ -3,21 +3,27 @@ import { Language } from 'src/collections/common/enums/language.enum';
 import { MediaType } from 'src/collections/common/enums/media-type.enum';
 
 export class CreateProgramDto {
-  @ApiProperty()
+  @ApiProperty({ example: 'My Awesome Program' })
   title: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'This is a description of my awesome program.', nullable: true })
   description: string;
 
-  @ApiProperty({ enum: MediaType })
-  mediatype: MediaType;
+  @ApiProperty({ enum: MediaType, example: MediaType.PODCAST })
+  mediaType: MediaType;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'podcast' })
   category: string;
 
   @ApiProperty({ enum: Language, example: Language.AR })
   language: Language;
 
-  @ApiProperty()
-  publishdate: Date;
+  @ApiProperty({ example: '2025-09-04T12:00:00Z', nullable: true })
+  publishDate: Date;
+
+  @ApiProperty({ example: 'https://example.com/program.mp3', nullable: true })
+  fileUrl: string;
+
+  @ApiProperty({ example: 'https://example.com/program-thumbnail.jpg', nullable: true })
+  thumbnailUrl: string;
 }

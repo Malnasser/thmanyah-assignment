@@ -15,5 +15,5 @@ export interface IBaseService<
   ): Promise<{ data: T[]; total: number; page: number; limit: number }>;
   findById(id: string, select?: (keyof T)[]): Promise<T | null>;
   update(id: string, dto: UpdateDto): Promise<T | null>;
-  delete(id: string): Promise<boolean>;
+  delete(id: string): Promise<T | null>;
 }

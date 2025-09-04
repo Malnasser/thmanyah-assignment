@@ -91,16 +91,4 @@ export class EpisodesController extends BaseController<
   ): Promise<Episode | null> {
     return super._update(id, updateEpisodeDto);
   }
-
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete episode' })
-  @ApiParam({ name: 'id', type: String, description: 'Episode ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'The episode has been successfully deleted.',
-  })
-  @ApiBearerAuth()
-  async remove(@Param('id') id: string): Promise<boolean> {
-    return super._remove(id);
-  }
 }

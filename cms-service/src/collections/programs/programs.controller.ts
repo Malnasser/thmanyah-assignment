@@ -1,3 +1,4 @@
+import { ProgramPaginationDto } from './dto/program-pagination.dto';
 import {
   Controller,
   Get,
@@ -42,6 +43,7 @@ export class ProgramsController extends BaseController<
     description: 'The program has been successfully created.',
     type: Program,
   })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiBearerAuth()
   async create(@Body() createProgramDto: CreateProgramDto): Promise<Program> {
@@ -50,10 +52,11 @@ export class ProgramsController extends BaseController<
 
   @Get()
   @ApiOperation({ summary: 'Get all programs' })
+  @ApiResponse({ status: 200, type: ProgramPaginationDto })
   @ApiBearerAuth()
   async findAll(
     @Query() query: PaginationQueryDto,
-  ): Promise<{ data: Program[]; total: number; page: number; limit: number }> {
+  ): Promise<ProgramPaginationDto> {
     return super._findAll(query);
   }
 
@@ -76,7 +79,25 @@ export class ProgramsController extends BaseController<
   @Patch(':id')
   @ApiOperation({ summary: 'Update program' })
   @ApiParam({ name: 'id', type: String, description: 'Program ID' })
-  @ApiBody({ type: UpdateProgramDto })
+  @ApiBody({
+    type: UpdateProgramDto,
+    examples: {
+      a: { summary: 'Partial Update', value: { title: 'New Title' } },
+      b: {
+        summary: 'Full Update',
+        value: {
+          title: 'New Title',
+          description: 'New Description',
+          category: 'movie',
+          mediaType: 'movie',
+          language: 'en',
+          publishDate: '2025-01-01T00:00:00Z',
+          fileUrl: 'http://example.com/new.mp3',
+          thumbnailUrl: 'http://example.com/new.jpg',
+        },
+      },
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'The program has been successfully updated.',
@@ -91,14 +112,14 @@ export class ProgramsController extends BaseController<
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete program' })
   @ApiParam({ name: 'id', type: String, description: 'Program ID' })
   @ApiResponse({
     status: 200,
     description: 'The program has been successfully deleted.',
+    type: Program,
   })
   @ApiBearerAuth()
-  async remove(@Param('id') id: string): Promise<boolean> {
+  async remove(@Param('id') id: string): Promise<Program | null> {
     return super._remove(id);
   }
 }

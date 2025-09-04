@@ -93,7 +93,7 @@ export abstract class BaseController<
     return this.baseService.update(id, updateDto);
   }
 
-  protected _remove(id: string): Promise<boolean> {
+  protected _remove(id: string): Promise<T | null> {
     return this.baseService.delete(id);
   }
 }
