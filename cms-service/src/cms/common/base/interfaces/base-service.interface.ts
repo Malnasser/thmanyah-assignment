@@ -1,11 +1,8 @@
-import { DeepPartial } from 'typeorm';
+import { IBaseRepository } from './base-repoitory.interface';
 
-export interface IBaseService<
-  T,
-  CreateDto = DeepPartial<T>,
-  UpdateDto = Partial<T>,
-> {
-  create(dto: CreateDto): Promise<T>;
+export interface IBaseService<T> {
+  repository: IBaseRepository<T>;
+  create(dto: T): Promise<T>;
   findWithPagination(
     page: number,
     limit: number,
@@ -19,6 +16,6 @@ export interface IBaseService<
     select?: (keyof T)[],
     relations?: string[],
   ): Promise<T | null>;
-  update(id: string, dto: UpdateDto): Promise<T | null>;
+  update(id: string, dto: T): Promise<T | null>;
   delete(id: string): Promise<T | null>;
 }

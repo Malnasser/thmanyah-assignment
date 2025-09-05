@@ -1,6 +1,7 @@
-import { DeepPartial, FindManyOptions, FindOptionsOrder } from 'typeorm';
+import { DeepPartial, FindManyOptions, FindOptionsOrder, EntityMetadata } from 'typeorm';
 
 export interface IBaseRepository<T> {
+  metadata: EntityMetadata;
   create(entity: DeepPartial<T>): Promise<T>;
   findById(
     id: string | number,

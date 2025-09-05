@@ -6,6 +6,10 @@ import { IBaseRepository } from './interfaces/base-repoitory.interface';
 
 export abstract class BaseService<T> implements IBaseService<T> {
   protected baseRepository: IBaseRepository<T>;
+
+  get repository(): IBaseRepository<T> {
+    return this.baseRepository;
+  }
   protected cacheManager: Cache;
   protected entityType: new () => T;
 

@@ -4,11 +4,16 @@ import {
   FindManyOptions,
   DeepPartial,
   FindOptionsOrder,
+  EntityMetadata,
 } from 'typeorm';
 import { IBaseRepository } from './interfaces/base-repoitory.interface';
 
 export abstract class BaseRepository<T> implements IBaseRepository<T> {
   protected repository: Repository<T>;
+
+  get metadata(): EntityMetadata {
+    return this.repository.metadata;
+  }
 
   constructor(repository: Repository<T>) {
     this.repository = repository;
