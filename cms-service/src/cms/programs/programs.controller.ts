@@ -10,6 +10,8 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  ParseUUIDPipe,
+  NotFoundException,
 } from '@nestjs/common';
 
 import {
@@ -99,10 +101,13 @@ export class ProgramsController extends BaseController<Program> {
   })
   @ApiBearerAuth()
   async findOne(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Query('select') select?: string,
   ): Promise<ProgramResDto | null> {
     const result = await super._findOne(id, select, ['category', 'poster']);
+    if (!result) {
+      throw new NotFoundException('Program not found');
+    }
     return ProgramResDto.fromEntity(result);
   }
 
@@ -111,22 +116,6 @@ export class ProgramsController extends BaseController<Program> {
   @ApiParam({ name: 'id', type: String, description: 'Program ID' })
   @ApiBody({
     type: UpdateProgramDto,
-    examples: {
-      a: { summary: 'Partial Update', value: { title: 'New Title' } },
-      b: {
-        summary: 'Full Update',
-        value: {
-          title: 'New Title',
-          description: 'New Description',
-          category: 'movie',
-          mediaType: 'movie',
-          language: 'en',
-          publishDate: '2025-01-01T00:00:00Z',
-          fileUrl: 'http://example.com/new.mp3',
-          thumbnailUrl: 'http://example.com/new.jpg',
-        },
-      },
-    },
   })
   @ApiResponse({
     status: 200,
@@ -135,12 +124,20 @@ export class ProgramsController extends BaseController<Program> {
   })
   @ApiBearerAuth()
   async update(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateProgramDto: UpdateProgramDto,
-  ): Promise<Program | null> {
+  ): Promise<ProgramResDto | null> {
+    const existingProgram = await super._findOne(id);
+    if (!existingProgram) {
+      throw new NotFoundException('Program not found');
+    }
     const entity = new Program();
     Object.assign(entity, updateProgramDto);
-    return super._update(id, entity);
+    const updatedProgram = await super._update(id, entity);
+    if (!updatedProgram) {
+      throw new NotFoundException('Program not found after update');
+    }
+    return ProgramResDto.fromEntity(updatedProgram);
   }
 
   @Delete(':id')
