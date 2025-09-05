@@ -11,6 +11,7 @@ export abstract class BaseController<T> {
 
   protected _findAll(
     query: PaginationQueryDto,
+    relations?: string[],
   ): Promise<{ data: T[]; total: number; page: number; limit: number }> {
     const { page = 1, limit = 10, filter, select, sort } = query;
     let filterObject: { [key: string]: any } | undefined;
@@ -67,10 +68,15 @@ export abstract class BaseController<T> {
       filterObject as Partial<T>,
       selectFields,
       sortObject,
+      relations,
     );
   }
 
-  protected _findOne(id: string, select?: string): Promise<T | null> {
+  protected _findOne(
+    id: string,
+    select?: string,
+    relations?: string[],
+  ): Promise<T | null> {
     let selectFields: (keyof T)[] | undefined;
     if (select) {
       const fields = select
@@ -81,7 +87,7 @@ export abstract class BaseController<T> {
         selectFields = fields as (keyof T)[];
       }
     }
-    return this.baseService.findById(id, selectFields);
+    return this.baseService.findById(id, selectFields, relations);
   }
 
   protected _update(id: string, entity: T): Promise<T | null> {

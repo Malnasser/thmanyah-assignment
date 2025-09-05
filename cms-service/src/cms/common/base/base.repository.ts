@@ -22,11 +22,13 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
   async findById(
     id: string | number,
     select?: (keyof T)[] | undefined,
+    relations?: string[],
   ): Promise<T | null> {
     const primaryKey = this.repository.metadata.primaryColumns[0].propertyName;
     return await this.repository.findOne({
       where: { [primaryKey]: id } as FindOptionsWhere<T>,
       select: select,
+      relations,
     });
   }
 
@@ -73,6 +75,7 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
     condition?: Partial<T>,
     select?: (keyof T)[] | undefined,
     sort?: FindOptionsOrder<T>,
+    relations?: string[],
   ): Promise<{ data: T[]; total: number; page: number; limit: number }> {
     const [data, total] = await this.repository.findAndCount({
       where: condition as FindOptionsWhere<T>,
@@ -80,6 +83,7 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
       take: limit,
       select,
       order: sort,
+      relations,
     });
 
     return {

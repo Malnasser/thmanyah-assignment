@@ -58,6 +58,7 @@ export abstract class BaseService<T> implements IBaseService<T> {
   async findById(
     id: string | number,
     select?: (keyof T)[] | undefined,
+    relations?: string[],
   ): Promise<T | null> {
     const cacheKey = this.getCacheKey(id, select);
     console.log(`Attempting to get from cache with key: ${cacheKey}`);
@@ -67,7 +68,7 @@ export abstract class BaseService<T> implements IBaseService<T> {
       return cachedData;
     }
     console.log(`Cache miss for key: ${cacheKey}. Fetching from repository.`);
-    const data = await this.baseRepository.findById(id, select);
+    const data = await this.baseRepository.findById(id, select, relations);
     if (data) {
       console.log(
         `Data fetched from repository. Setting cache for key: ${cacheKey}`,
@@ -164,6 +165,7 @@ export abstract class BaseService<T> implements IBaseService<T> {
     filter?: Partial<T>,
     select?: (keyof T)[] | undefined,
     sort?: Record<string, 'ASC' | 'DESC'>,
+    relations?: string[],
   ): Promise<{ data: T[]; total: number; page: number; limit: number }> {
     const cacheKey = this.getPaginationCacheKey(
       page,
@@ -193,6 +195,7 @@ export abstract class BaseService<T> implements IBaseService<T> {
       filter,
       select,
       sort as FindOptionsOrder<T>,
+      relations,
     );
 
     console.log(`Setting paginated cache for key: ${cacheKey}`);

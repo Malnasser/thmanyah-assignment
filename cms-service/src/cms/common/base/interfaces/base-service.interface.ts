@@ -12,8 +12,13 @@ export interface IBaseService<
     filter?: Partial<T>,
     select?: (keyof T)[],
     sort?: Record<string, 'ASC' | 'DESC'>,
+    relations?: string[],
   ): Promise<{ data: T[]; total: number; page: number; limit: number }>;
-  findById(id: string, select?: (keyof T)[]): Promise<T | null>;
+  findById(
+    id: string,
+    select?: (keyof T)[],
+    relations?: string[],
+  ): Promise<T | null>;
   update(id: string, dto: UpdateDto): Promise<T | null>;
   delete(id: string): Promise<T | null>;
 }

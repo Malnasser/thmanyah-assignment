@@ -23,6 +23,7 @@ import {
   ApiCreatedResponse,
   ApiBadRequestResponse,
   ApiForbiddenResponse,
+  ApiQuery,
 } from '@nestjs/swagger';
 
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -36,12 +37,11 @@ import {
   ProgramPaginationDto,
   UpdateProgramDto,
   CreateProgramReqDto,
+  ProgramResDto,
 } from './dto/';
 import { PaginationQueryDto } from '../common/base/dto/pagination-query.dto';
 
 import { Express } from 'express';
-import { CreateProgramResDto } from './dto/create-program.res.dto';
-import { instanceToPlain, plainToInstance } from 'class-transformer';
 
 @ApiTags('Programs')
 @Controller('programs')
@@ -57,21 +57,19 @@ export class ProgramsController extends BaseController<Program> {
   @ApiOperation({ summary: 'Create program' })
   @ApiCreatedResponse({
     description: 'The program has been successfully created.',
-    type: CreateProgramResDto,
+    type: ProgramResDto,
   })
   @ApiBadRequestResponse({ description: 'Bad Request.' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiBearerAuth()
   async create(
     @Body() createProgramDto: CreateProgramReqDto,
-  ): Promise<CreateProgramResDto> {
+  ): Promise<ProgramResDto> {
+    // TODO: find better way to transform req dto to entity without breaking
     const entity = new Program();
     Object.assign(entity, createProgramDto);
     const saved = await this.programsService.create(entity);
-    const plain = instanceToPlain(saved);
-    return plainToInstance(CreateProgramResDto, plain, {
-      excludeExtraneousValues: true,
-    });
+    return ProgramResDto.fromEntity(saved);
   }
 
   @Get()
@@ -81,12 +79,19 @@ export class ProgramsController extends BaseController<Program> {
   async findAll(
     @Query() query: PaginationQueryDto,
   ): Promise<ProgramPaginationDto> {
-    return super._findAll(query);
+    const result = await super._findAll(query, ['category', 'poster']);
+    return ProgramPaginationDto.fromPaginated(result);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get program by id' })
   @ApiParam({ name: 'id', type: String, description: 'Program ID' })
+  @ApiQuery({
+    name: 'select',
+    type: String,
+    required: false,
+    description: 'Comma separated fields to select',
+  })
   @ApiResponse({
     status: 200,
     description: 'Return program by id.',
@@ -96,8 +101,9 @@ export class ProgramsController extends BaseController<Program> {
   async findOne(
     @Param('id') id: string,
     @Query('select') select?: string,
-  ): Promise<Program | null> {
-    return super._findOne(id, select);
+  ): Promise<ProgramResDto | null> {
+    const result = await super._findOne(id, select, ['category', 'poster']);
+    return ProgramResDto.fromEntity(result);
   }
 
   @Patch(':id')

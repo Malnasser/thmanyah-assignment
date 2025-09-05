@@ -10,11 +10,9 @@ import {
 import { Episode } from '../../episodes/entities/episode.entity';
 import { Language } from '../../common/enums/language.enum';
 import { MediaType } from '../../common/enums/media-type.enum';
-import { ApiProperty } from '@nestjs/swagger';
 import { MediaUpload } from '../../media/entities/media.entity';
 import { Category } from '../../../cms/categories/entities/category.entity';
 import { ContentStatus } from '../../common/enums/content-status.enum';
-import { Expose } from 'class-transformer';
 
 @Entity('programs')
 @Index('idx_program_title', ['title'])

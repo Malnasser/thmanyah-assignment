@@ -11,7 +11,6 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-
   const config = new DocumentBuilder()
     .setTitle('CMS Service')
     .setDescription('The CMS service API description')
