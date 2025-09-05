@@ -4,9 +4,10 @@ import { ProgramsController } from './programs.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Program } from './entities/program.entity';
 import { ProgramRepository } from './programs.repository';
+import { MediaModule } from '../media/media.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Program])],
+  imports: [TypeOrmModule.forFeature([Program]), MediaModule],
   controllers: [ProgramsController],
   providers: [ProgramsService, ProgramRepository],
   exports: [ProgramsService],

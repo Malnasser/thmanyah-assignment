@@ -1,8 +1,10 @@
 import { DataSource } from 'typeorm';
-import { Program } from './collections/programs/entities/program.entity';
-import { Episode } from './collections/episodes/entities/episode.entity';
+import { Program } from './cms/programs/entities/program.entity';
+import { Episode } from './cms/episodes/entities/episode.entity';
 import { config } from 'dotenv';
-import { User } from './collections/users/entities/user.entity';
+import { User } from './cms/users/entities/user.entity';
+import { MediaUpload } from './cms/media/entities/media.entity';
+import { Category } from './cms/categories/entities/category.entity';
 
 config();
 
@@ -13,7 +15,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [Program, Episode, User],
+  entities: [Program, Episode, User, MediaUpload, Category],
   migrations: [__dirname + '/../migrations/*.ts'],
   synchronize: false,
   logging: process.env.NODE_ENV == 'development',

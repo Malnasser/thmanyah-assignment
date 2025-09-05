@@ -1,7 +1,6 @@
 import { FindManyOptions, DeepPartial, FindOptionsOrder } from 'typeorm';
 import { Inject } from '@nestjs/common';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { IBaseService } from './interfaces/base-service.interface';
 import { IBaseRepository } from './interfaces/base-repoitory.interface';
 

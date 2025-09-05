@@ -10,7 +10,7 @@ import { AuthResponseDto } from './dto/auth-response.dto';
 import * as bcrypt from 'bcrypt';
 import { IAuthService } from './interfaces/auth-service.interface';
 import { ITokenService } from './interfaces/token-service.interface';
-import { IUserRepository } from 'src/collections/users/interfaces/user-repository.interface';
+import { IUserRepository } from 'src/cms/users/interfaces/user-repository.interface';
 
 @Injectable()
 export class AuthService implements IAuthService {

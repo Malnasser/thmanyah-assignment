@@ -4,13 +4,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
-import { CmsModule } from './collections/cms.module';
-import { Program } from './collections/programs/entities/program.entity';
-import { User } from './collections/users/entities/user.entity';
-import { Episode } from './collections/episodes/entities/episode.entity';
+import { CmsModule } from './cms/cms.module';
+import { Program } from './cms/programs/entities/program.entity';
+import { User } from './cms/users/entities/user.entity';
+import { Episode } from './cms/episodes/entities/episode.entity';
 import { CoreModule } from './core/core.module';
 import { JwtAuthGuard } from './core/auth/guards/jwt-auth.guard';
 import { DiscoveryModule } from './discovery/discovery.module';
+import { MediaUpload } from './cms/media/entities/media.entity';
+import { Category } from './cms/categories/entities/category.entity';
 
 @Module({
   imports: [
@@ -41,7 +43,7 @@ import { DiscoveryModule } from './discovery/discovery.module';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Program, User, Episode],
+        entities: [Program, User, Episode, MediaUpload, Category],
         migrations: [__dirname + '/../migrations/*.ts'],
         synchronize: false,
         logging: process.env.NODE_ENV == 'development',

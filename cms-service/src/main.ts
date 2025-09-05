@@ -4,7 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AuthService } from './core/auth/auth.service';
 import { ConfigService } from '@nestjs/config';
-import { UsersService } from './collections/users/users.service';
+import { UsersService } from './cms/users/users.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

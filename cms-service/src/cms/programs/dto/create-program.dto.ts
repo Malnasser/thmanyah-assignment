@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Language } from 'src/collections/common/enums/language.enum';
-import { MediaType } from 'src/collections/common/enums/media-type.enum';
+import { Language } from 'src/cms/common/enums/language.enum';
+import { MediaType } from 'src/cms/common/enums/media-type.enum';
 
 export class CreateProgramDto {
   @ApiProperty({ example: 'My Awesome Program' })
@@ -15,8 +15,8 @@ export class CreateProgramDto {
   @ApiProperty({ enum: MediaType, example: MediaType.PODCAST })
   mediaType: MediaType;
 
-  @ApiProperty({ example: 'podcast' })
-  category: string;
+  @ApiProperty({ example: 'c6acbc14-113c-4014-a717-3d67acd36ad9' })
+  categoryId: string;
 
   @ApiProperty({ enum: Language, example: Language.AR })
   language: Language;

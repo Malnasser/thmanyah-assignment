@@ -8,11 +8,15 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { ProgramsService } from './programs.service';
 import { CreateProgramDto } from './dto/create-program.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import {
+  ApiConsumes,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -23,6 +27,9 @@ import {
 import { Program } from './entities/program.entity';
 import { BaseController } from '../common/base/base.controller';
 import { PaginationQueryDto } from '../common/base/dto/pagination-query.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { MediaService } from '../media/media.service';
+import { Express } from 'express';
 
 @ApiTags('Programs')
 @Controller('programs')
@@ -31,7 +38,10 @@ export class ProgramsController extends BaseController<
   CreateProgramDto,
   UpdateProgramDto
 > {
-  constructor(private readonly programsService: ProgramsService) {
+  constructor(
+    private readonly programsService: ProgramsService,
+    private readonly mediaService: MediaService,
+  ) {
     super(programsService);
   }
 
@@ -121,5 +131,49 @@ export class ProgramsController extends BaseController<
   @ApiBearerAuth()
   async remove(@Param('id') id: string): Promise<Program | null> {
     return super._remove(id);
+  }
+
+  @Post(':id/upload-poster')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Upload a poster for a program' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Poster image file',
+    required: true,
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiParam({ name: 'id', type: String, description: 'Program ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The poster has been successfully uploaded.',
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiBearerAuth()
+  async uploadPoster(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file.mimetype.startsWith('image')) {
+      throw new BadRequestException('File is not an image');
+    }
+
+    const media = await this.mediaService.uploadToS3(
+      file.buffer,
+      file.originalname,
+      file.mimetype,
+      'image',
+    );
+
+    const program = await this.programsService.attachPoster(id, media.id);
+
+    return { program, media };
   }
 }

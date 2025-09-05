@@ -13,4 +13,12 @@ export class ProgramsService extends BaseService<Program> {
   ) {
     super(programRepository, cacheManager, Program);
   }
+
+  async attachPoster(programId: string, mediaId: string) {
+    const program = await this.programRepository.findById(programId);
+    if (!program) throw new Error('Program not found');
+
+    program.poster = { id: mediaId } as any; // assumes ManyToOne relation
+    return this.programRepository.update(programId, program);
+  }
 }

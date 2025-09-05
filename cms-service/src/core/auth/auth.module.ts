@@ -8,7 +8,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { TokenService } from './token.service';
 import { CacheModule } from '@nestjs/cache-manager';
-import { UsersModule } from 'src/collections/users/users.module';
+import { UsersModule } from 'src/cms/users/users.module';
 
 @Module({
   imports: [

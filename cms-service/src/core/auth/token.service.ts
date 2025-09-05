@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ITokenService } from './interfaces/token-service.interface';
-import { User } from 'src/collections/users/entities/user.entity';
+import { User } from 'src/cms/users/entities/user.entity';
 
 @Injectable()
 export class TokenService implements ITokenService {

@@ -1,10 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+  Index,
+} from 'typeorm';
 import { Episode } from '../../episodes/entities/episode.entity';
 import { Language } from '../../common/enums/language.enum';
 import { MediaType } from '../../common/enums/media-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
+import { MediaUpload } from '../../media/entities/media.entity';
+import { Category } from '../../../cms/categories/entities/category.entity';
 
 @Entity('programs')
+@Index('idx_program_title', ['title'])
+@Index('idx_program_publishDate', ['publishDate'])
+@Index('idx_program_categoryId', ['category'])
 export class Program {
   @ApiProperty({ example: 'c6acbc14-113c-4014-a717-3d67acd36ad9' })
   @PrimaryGeneratedColumn('uuid')
@@ -21,9 +34,14 @@ export class Program {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @ApiProperty({ example: 'podcast' })
-  @Column()
-  category: string; // movie, podcast, documentary, etc.
+  @Column({ type: 'tsvector', select: false, nullable: true })
+  searchVector: string;
+
+  @ManyToOne(() => Category, (category: Category) => category.programs, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'categoryId' })
+  category: Category;
 
   @ApiProperty({ enum: MediaType, example: MediaType.PODCAST })
   @Column({ type: 'enum', enum: MediaType, default: MediaType.PODCAST })
@@ -37,18 +55,18 @@ export class Program {
   @Column({ type: 'timestamp', nullable: true })
   publishDate: Date;
 
-  @ApiProperty({ example: 'https://example.com/program.mp3', nullable: true })
-  @Column({ nullable: true })
-  fileUrl: string; // S3 path
-
-  @ApiProperty({
-    example: 'https://example.com/program-thumbnail.jpg',
+  @ManyToOne(() => MediaUpload, (media) => media.programsWithPoster, {
     nullable: true,
+    onDelete: 'SET NULL',
   })
-  @Column({ nullable: true })
-  thumbnailUrl: string;
+  @JoinColumn({ name: 'poster_id' })
+  poster?: MediaUpload;
 
   @ApiProperty({ type: () => [Episode] })
   @OneToMany(() => Episode, (episode) => episode.program, { cascade: true })
   episodes: Episode[];
+
+  @ApiProperty({ description: 'Additional metadata for the media file.' })
+  @Column({ type: 'jsonb', default: {} })
+  metadata: Record<string, any>;
 }
