@@ -13,6 +13,7 @@ import { MediaType } from '../../common/enums/media-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { MediaUpload } from '../../media/entities/media.entity';
 import { Category } from '../../../cms/categories/entities/category.entity';
+import { ContentStatus } from '../../common/enums/content-status.enum';
 
 @Entity('programs')
 @Index('idx_program_title', ['title'])
@@ -65,6 +66,13 @@ export class Program {
   @ApiProperty({ type: () => [Episode] })
   @OneToMany(() => Episode, (episode) => episode.program, { cascade: true })
   episodes: Episode[];
+
+  @Column({
+    type: 'enum',
+    enum: ContentStatus,
+    default: ContentStatus.DRAFT,
+  })
+  status: ContentStatus;
 
   @ApiProperty({ description: 'Additional metadata for the media file.' })
   @Column({ type: 'jsonb', default: {} })

@@ -9,6 +9,7 @@ import {
 import { Program } from '../../programs/entities/program.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { MediaUpload } from '../../media/entities/media.entity';
+import { ContentStatus } from '../../common/enums/content-status.enum';
 
 @Entity('episodes')
 @Index('idx_episode_title', ['title'])
@@ -56,6 +57,13 @@ export class Episode {
   })
   @JoinColumn({ name: 'programId' })
   program: Program;
+
+  @Column({
+    type: 'enum',
+    enum: ContentStatus,
+    default: ContentStatus.DRAFT,
+  })
+  status: ContentStatus;
 
   @ApiProperty({ description: 'Additional metadata for the media file.' })
   @Column({ type: 'jsonb', default: {} })
