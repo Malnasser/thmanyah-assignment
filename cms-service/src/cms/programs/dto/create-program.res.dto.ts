@@ -1,35 +1,43 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
+import { Category } from 'src/cms/categories/entities/category.entity';
+import { ContentStatus } from 'src/cms/common/enums/content-status.enum';
 import { Language } from 'src/cms/common/enums/language.enum';
 import { MediaType } from 'src/cms/common/enums/media-type.enum';
 
-export class CreateProgramDto {
+export class CreateProgramResDto {
+  @Expose()
   @ApiProperty({ example: 'My Awesome Program' })
   title: string;
 
+  @Expose()
   @ApiProperty({
     example: 'This is a description of my awesome program.',
     nullable: true,
   })
   description: string;
 
+  @Expose()
   @ApiProperty({ enum: MediaType, example: MediaType.PODCAST })
   mediaType: MediaType;
 
-  @ApiProperty({ example: 'c6acbc14-113c-4014-a717-3d67acd36ad9' })
-  categoryId: string;
-
+  @Expose()
   @ApiProperty({ enum: Language, example: Language.AR })
   language: Language;
 
+  @Expose()
   @ApiProperty({ example: '2025-09-04T12:00:00Z', nullable: true })
   publishDate: Date;
 
-  @ApiProperty({ example: 'https://example.com/program.mp3', nullable: true })
-  fileUrl: string;
+  @Expose()
+  @ApiProperty({ enum: ContentStatus, example: ContentStatus.DRAFT })
+  status: ContentStatus;
 
-  @ApiProperty({
-    example: 'https://example.com/program-thumbnail.jpg',
-    nullable: true,
-  })
-  thumbnailUrl: string;
+  @Expose()
+  @ApiProperty()
+  category: Category;
+
+  @Expose()
+  @ApiProperty({ example: { author: 'Mahmood Alnasser' } })
+  metadata: Record<string, any>;
 }

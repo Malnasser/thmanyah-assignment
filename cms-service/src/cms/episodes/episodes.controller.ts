@@ -25,11 +25,7 @@ import { PaginationQueryDto } from '../common/base/dto/pagination-query.dto';
 
 @ApiTags('Episodes')
 @Controller('episodes')
-export class EpisodesController extends BaseController<
-  Episode,
-  CreateEpisodeDto,
-  UpdateEpisodeDto
-> {
+export class EpisodesController extends BaseController<Episode> {
   constructor(private readonly episodesService: EpisodesService) {
     super(episodesService);
   }
@@ -46,7 +42,9 @@ export class EpisodesController extends BaseController<
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiBearerAuth()
   async create(@Body() createEpisodeDto: CreateEpisodeDto): Promise<Episode> {
-    return super._create(createEpisodeDto);
+    const entity = new Episode();
+    Object.assign(entity, createEpisodeDto);
+    return super._create(entity);
   }
 
   @Get()
@@ -90,7 +88,9 @@ export class EpisodesController extends BaseController<
     @Param('id') id: string,
     @Body() updateEpisodeDto: UpdateEpisodeDto,
   ): Promise<Episode | null> {
-    return super._update(id, updateEpisodeDto);
+    const entity = new Episode();
+    Object.assign(entity, updateEpisodeDto);
+    return super._update(id, entity);
   }
 
   @Delete(':id')

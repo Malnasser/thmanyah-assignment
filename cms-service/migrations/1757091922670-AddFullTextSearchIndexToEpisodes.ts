@@ -1,6 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddFullTextSearchIndexToEpisodes1757091922670 implements MigrationInterface {
+export class AddFullTextSearchIndexToEpisodes1757091922670
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
       ALTER TABLE episodes
@@ -24,3 +26,4 @@ export class AddFullTextSearchIndexToEpisodes1757091922670 implements MigrationI
     await queryRunner.query(`ALTER TABLE episodes DROP COLUMN search_vector;`);
   }
 }
+

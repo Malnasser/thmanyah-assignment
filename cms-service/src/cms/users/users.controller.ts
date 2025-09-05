@@ -26,11 +26,7 @@ import { UserPaginationDto } from './dto/user-pagination.dto';
 
 @ApiTags('Users')
 @Controller('users')
-export class UsersController extends BaseController<
-  User,
-  CreateUserDto,
-  UpdateUserDto
-> {
+export class UsersController extends BaseController<User> {
   constructor(private readonly userService: UsersService) {
     super(userService);
   }
@@ -50,7 +46,9 @@ export class UsersController extends BaseController<
   })
   @ApiBearerAuth()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return super._create(createUserDto);
+    const entity = new User();
+    Object.assign(entity, createUserDto);
+    return super._create(entity);
   }
 
   @Get()
@@ -109,7 +107,9 @@ export class UsersController extends BaseController<
     @Param('id') id: string,
     @Body() updateProgramDto: UpdateUserDto,
   ): Promise<User | null> {
-    return super._update(id, updateProgramDto);
+    const entity = new User();
+    Object.assign(entity, updateProgramDto);
+    return super._update(id, entity);
   }
 
   @Delete(':id')

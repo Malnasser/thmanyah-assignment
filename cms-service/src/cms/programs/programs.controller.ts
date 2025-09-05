@@ -1,4 +1,3 @@
-import { ProgramPaginationDto } from './dto/program-pagination.dto';
 import {
   Controller,
   Get,
@@ -12,9 +11,7 @@ import {
   UploadedFile,
   BadRequestException,
 } from '@nestjs/common';
-import { ProgramsService } from './programs.service';
-import { CreateProgramDto } from './dto/create-program.dto';
-import { UpdateProgramDto } from './dto/update-program.dto';
+
 import {
   ApiConsumes,
   ApiOperation,
@@ -23,21 +20,32 @@ import {
   ApiBody,
   ApiParam,
   ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiBadRequestResponse,
+  ApiForbiddenResponse,
 } from '@nestjs/swagger';
+
+import { FileInterceptor } from '@nestjs/platform-express';
+
+import { ProgramsService } from './programs.service';
+import { MediaService } from '../media/media.service';
 import { Program } from './entities/program.entity';
 import { BaseController } from '../common/base/base.controller';
+
+import {
+  ProgramPaginationDto,
+  UpdateProgramDto,
+  CreateProgramReqDto,
+} from './dto/';
 import { PaginationQueryDto } from '../common/base/dto/pagination-query.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { MediaService } from '../media/media.service';
+
 import { Express } from 'express';
+import { CreateProgramResDto } from './dto/create-program.res.dto';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 
 @ApiTags('Programs')
 @Controller('programs')
-export class ProgramsController extends BaseController<
-  Program,
-  CreateProgramDto,
-  UpdateProgramDto
-> {
+export class ProgramsController extends BaseController<Program> {
   constructor(
     private readonly programsService: ProgramsService,
     private readonly mediaService: MediaService,
@@ -47,17 +55,23 @@ export class ProgramsController extends BaseController<
 
   @Post()
   @ApiOperation({ summary: 'Create program' })
-  @ApiBody({ type: CreateProgramDto })
-  @ApiResponse({
-    status: 201,
+  @ApiCreatedResponse({
     description: 'The program has been successfully created.',
-    type: Program,
+    type: CreateProgramResDto,
   })
-  @ApiResponse({ status: 400, description: 'Bad Request.' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiBadRequestResponse({ description: 'Bad Request.' })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiBearerAuth()
-  async create(@Body() createProgramDto: CreateProgramDto): Promise<Program> {
-    return super._create(createProgramDto);
+  async create(
+    @Body() createProgramDto: CreateProgramReqDto,
+  ): Promise<CreateProgramResDto> {
+    const entity = new Program();
+    Object.assign(entity, createProgramDto);
+    const saved = await this.programsService.create(entity);
+    const plain = instanceToPlain(saved);
+    return plainToInstance(CreateProgramResDto, plain, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Get()
@@ -118,7 +132,9 @@ export class ProgramsController extends BaseController<
     @Param('id') id: string,
     @Body() updateProgramDto: UpdateProgramDto,
   ): Promise<Program | null> {
-    return super._update(id, updateProgramDto);
+    const entity = new Program();
+    Object.assign(entity, updateProgramDto);
+    return super._update(id, entity);
   }
 
   @Delete(':id')

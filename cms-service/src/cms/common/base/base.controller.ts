@@ -1,17 +1,12 @@
-import { DeepPartial } from 'typeorm';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { IBaseService } from './interfaces/base-service.interface';
 import { BadRequestException } from '@nestjs/common';
 
-export abstract class BaseController<
-  T,
-  CreateDto extends DeepPartial<T>,
-  UpdateDto extends Partial<T>,
-> {
-  constructor(protected baseService: IBaseService<T, CreateDto, UpdateDto>) {}
+export abstract class BaseController<T> {
+  constructor(protected baseService: IBaseService<T>) {}
 
-  protected _create(createDto: CreateDto): Promise<T> {
-    return this.baseService.create(createDto);
+  protected _create(entity: T): Promise<T> {
+    return this.baseService.create(entity);
   }
 
   protected _findAll(
@@ -89,8 +84,8 @@ export abstract class BaseController<
     return this.baseService.findById(id, selectFields);
   }
 
-  protected _update(id: string, updateDto: UpdateDto): Promise<T | null> {
-    return this.baseService.update(id, updateDto);
+  protected _update(id: string, entity: T): Promise<T | null> {
+    return this.baseService.update(id, entity);
   }
 
   protected _remove(id: string): Promise<T | null> {

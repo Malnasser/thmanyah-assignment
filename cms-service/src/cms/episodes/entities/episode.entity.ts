@@ -30,7 +30,13 @@ export class Episode {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: 'tsvector', select: false, nullable: true })
+  @Column({
+    type: 'tsvector',
+    select: false,
+    nullable: true,
+    insert: false,
+    update: false,
+  })
   searchVector: string;
 
   @ApiProperty({ example: 'en', nullable: false })

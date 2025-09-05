@@ -51,7 +51,7 @@ export abstract class BaseService<T> implements IBaseService<T> {
 
   async create(entity: DeepPartial<T>): Promise<T> {
     const createdEntity = await this.baseRepository.create(entity);
-    await this.cacheManager.del(this.getCacheKey()); // Invalidate all
+    await this.cacheManager.del(this.getCacheKey());
     return createdEntity;
   }
 

@@ -1,6 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddFullTextSearchIndexToPrograms1757091849362 implements MigrationInterface {
+export class AddFullTextSearchIndexToPrograms1757091849362
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Add the tsvector column
     await queryRunner.query(`
@@ -27,3 +29,4 @@ export class AddFullTextSearchIndexToPrograms1757091849362 implements MigrationI
     await queryRunner.query(`ALTER TABLE programs DROP COLUMN search_vector`);
   }
 }
+

@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Program } from './entities/program.entity';
 import { ProgramRepository } from './programs.repository';
 import { MediaModule } from '../media/media.module';
+import { CategoriesModule } from '../categories/categories.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Program]), MediaModule],
+  imports: [TypeOrmModule.forFeature([Program]), MediaModule, CategoriesModule],
   controllers: [ProgramsController],
   providers: [ProgramsService, ProgramRepository],
   exports: [ProgramsService],

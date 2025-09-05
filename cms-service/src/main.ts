@@ -1,6 +1,6 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AuthService } from './core/auth/auth.service';
 import { ConfigService } from '@nestjs/config';
@@ -9,8 +9,8 @@ import { UsersService } from './cms/users/users.service';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
-
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const config = new DocumentBuilder()
     .setTitle('CMS Service')

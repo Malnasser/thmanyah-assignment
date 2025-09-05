@@ -25,11 +25,7 @@ import { PaginationQueryDto } from '../../cms/common/base/dto/pagination-query.d
 
 @ApiTags('Categories')
 @Controller('categories')
-export class CategoriesController extends BaseController<
-  Category,
-  CreateCategoryDto,
-  UpdateCategoryDto
-> {
+export class CategoriesController extends BaseController<Category> {
   constructor(private readonly categoriesService: CategoriesService) {
     super(categoriesService);
   }
@@ -45,8 +41,12 @@ export class CategoriesController extends BaseController<
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiBearerAuth()
-  async create(@Body() createCategoryDto: CreateCategoryDto): Promise<Category> {
-    return super._create(createCategoryDto);
+  async create(
+    @Body() createCategoryDto: CreateCategoryDto,
+  ): Promise<Category> {
+    const entity = new Category();
+    Object.assign(entity, createCategoryDto);
+    return super._create(entity);
   }
 
   @Get()
@@ -90,7 +90,9 @@ export class CategoriesController extends BaseController<
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ): Promise<Category | null> {
-    return super._update(id, updateCategoryDto);
+    const entity = new Category();
+    Object.assign(entity, updateCategoryDto);
+    return super._update(id, entity);
   }
 
   @Delete(':id')
