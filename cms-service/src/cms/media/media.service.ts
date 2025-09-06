@@ -20,7 +20,7 @@ export class MediaService extends BaseService<MediaUpload> {
     fileName: string,
     mimeType: string,
     type: string,
-  ) {
+  ): Promise<MediaUpload> {
     const upload = await this.s3Service.uploadFile(
       fileStream,
       fileName,
