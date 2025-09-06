@@ -1,13 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { Program } from '../../../cms/programs/entities/program.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { BaseEntity } from '../../common/base/base.entity';
 
 @Entity('categories')
-export class Category {
-  @ApiProperty({ example: 'c6acbc14-113c-4014-a717-3d67acd36ad9' })
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Category extends BaseEntity {
   @ApiProperty({ example: 'Documentary' })
   @Column({ unique: true })
   name: string;

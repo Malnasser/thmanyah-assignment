@@ -1,6 +1,5 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
   OneToMany,
   ManyToOne,
@@ -13,15 +12,13 @@ import { MediaType } from '../../common/enums/media-type.enum';
 import { MediaUpload } from '../../media/entities/media.entity';
 import { Category } from '../../../cms/categories/entities/category.entity';
 import { ContentStatus } from '../../common/enums/content-status.enum';
+import { BaseEntity } from '../../common/base/base.entity';
 
 @Entity('programs')
 @Index('idx_program_title', ['title'])
 @Index('idx_program_publishDate', ['publishDate'])
 @Index('idx_program_categoryId', ['category'])
-export class Program {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Program extends BaseEntity {
   @Column()
   title: string;
 

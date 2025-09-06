@@ -1,24 +1,14 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  JoinColumn,
-  Index,
-} from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
 import { Program } from '../../programs/entities/program.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { MediaUpload } from '../../media/entities/media.entity';
 import { ContentStatus } from '../../common/enums/content-status.enum';
+import { BaseEntity } from '../../common/base/base.entity';
 
 @Entity('episodes')
 @Index('idx_episode_title', ['title'])
 @Index('idx_episode_publishDate', ['publishDate'])
-export class Episode {
-  @ApiProperty({ example: 'c6acbc14-113c-4014-a717-3d67acd36ad9' })
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Episode extends BaseEntity {
   @ApiProperty({ example: 'My Awesome Episode' })
   @Column()
   title: string;

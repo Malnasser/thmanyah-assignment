@@ -1,12 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { Program } from '../../programs/entities/program.entity';
 import { Episode } from '../../episodes/entities/episode.entity';
+import { BaseEntity } from '../../common/base/base.entity';
 
 @Entity('media_uploads')
-export class MediaUpload {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class MediaUpload extends BaseEntity {
   @Column({ type: 'text' })
   fileUrl: string;
 
