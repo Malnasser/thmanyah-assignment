@@ -14,7 +14,12 @@ export class CategoryPaginationDto {
   @ApiProperty({ example: 10, description: 'Number of items per page' })
   limit: number;
 
-  static fromPaginated(result: { data: any[]; total: number; page: number; limit: number }): CategoryPaginationDto {
+  static fromPaginated(result: {
+    data: any[];
+    total: number;
+    page: number;
+    limit: number;
+  }): CategoryPaginationDto {
     const dto = new CategoryPaginationDto();
     dto.data = result.data.map(CategoryResDto.fromEntity);
     dto.total = result.total;

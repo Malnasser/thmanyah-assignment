@@ -12,10 +12,13 @@ export class S3Service implements IS3Service {
     this.s3 = new S3Client({
       region: this.configService.get<string>('AWS_REGION'),
       endpoint: this.configService.get<string>('AWS_ENDPOINT'),
-      forcePathStyle: this.configService.get<string>('AWS_FORCE_PATH_STYLE') === 'true',
+      forcePathStyle:
+        this.configService.get<string>('AWS_FORCE_PATH_STYLE') === 'true',
       credentials: {
         accessKeyId: this.configService.get<string>('AWS_ACCESS_KEY_ID'),
-        secretAccessKey: this.configService.get<string>('AWS_SECRET_ACCESS_KEY'),
+        secretAccessKey: this.configService.get<string>(
+          'AWS_SECRET_ACCESS_KEY',
+        ),
       },
     });
   }

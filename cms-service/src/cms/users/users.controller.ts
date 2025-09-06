@@ -8,7 +8,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { BaseController } from '../common/base/base.controller';
-import { User } from './entities/user.entity';
+import { User } from './entities';
 import { UsersService } from './users.service';
 import {
   ApiBearerAuth,
@@ -17,9 +17,6 @@ import {
   ApiParam,
   ApiResponse,
   ApiTags,
-  ApiCreatedResponse,
-  ApiBadRequestResponse,
-  ApiConflictResponse,
   ApiQuery,
 } from '@nestjs/swagger';
 import { PaginationQueryDto } from '../common/base/dto/pagination-query.dto';

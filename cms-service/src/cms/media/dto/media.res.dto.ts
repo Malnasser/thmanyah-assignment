@@ -35,4 +35,3 @@ export class MediaResDto {
     return dto;
   }
 }
-

@@ -14,7 +14,12 @@ export class MediaPaginationDto {
   @ApiProperty({ example: 10, description: 'Number of items per page' })
   limit: number;
 
-  static fromPaginated(result: { data: any[]; total: number; page: number; limit: number }): MediaPaginationDto {
+  static fromPaginated(result: {
+    data: any[];
+    total: number;
+    page: number;
+    limit: number;
+  }): MediaPaginationDto {
     const dto = new MediaPaginationDto();
     dto.data = result.data.map(MediaResDto.fromEntity);
     dto.total = result.total;
