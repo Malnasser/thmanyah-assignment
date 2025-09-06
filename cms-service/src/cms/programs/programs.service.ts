@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { BaseService } from '../common/base/base.service';
-import { Program } from './entities/program.entity';
+import { Program } from './entities';
 import { ProgramRepository } from './programs.repository';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';

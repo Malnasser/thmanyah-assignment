@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { SearchController } from './search.controller';
-import { ProgramsModule } from 'src/cms/programs/programs.module';
+import { ProgramsModule } from 'src/cms/programs';
 
 @Module({
   imports: [ProgramsModule],

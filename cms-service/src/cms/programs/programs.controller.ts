@@ -32,7 +32,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 import { ProgramsService } from './programs.service';
 import { MediaService } from '../media/media.service';
-import { Program } from './entities/program.entity';
+import { Program } from './entities';
 import { BaseController } from '../common/base/base.controller';
 
 import {
@@ -40,7 +40,7 @@ import {
   UpdateProgramDto,
   CreateProgramReqDto,
   ProgramResDto,
-} from './dto/';
+} from './dto';
 import { PaginationQueryDto } from '../common/base/dto/pagination-query.dto';
 
 import { Express } from 'express';
