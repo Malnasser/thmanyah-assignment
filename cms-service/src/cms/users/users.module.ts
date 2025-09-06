@@ -4,9 +4,10 @@ import { UsersController } from './users.controller';
 import { User } from './entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from './users.repository';
+import { CacheModule } from 'src/core/cache/cache.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User]), CacheModule],
   controllers: [UsersController],
   providers: [
     UsersService,

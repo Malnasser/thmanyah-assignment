@@ -7,13 +7,11 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { TokenService } from './token.service';
-import { CacheModule } from '@nestjs/cache-manager';
 import { UsersModule } from 'src/cms/users/users.module';
 
 @Module({
   imports: [
     UsersModule,
-    CacheModule.register(),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

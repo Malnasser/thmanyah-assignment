@@ -2,15 +2,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { BaseService } from '../common/base/base.service';
 import { Episode } from './entities/episode.entity';
 import { EpisodeRepository } from './episodes.repository';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
+import { ICacheService } from 'src/core/cache/interfaces/cache-service.interface';
 
 @Injectable()
 export class EpisodesService extends BaseService<Episode> {
   constructor(
     private readonly episodeRepository: EpisodeRepository,
-    @Inject(CACHE_MANAGER) cacheManager: Cache,
+    @Inject('ICacheService') cacheService: ICacheService,
   ) {
-    super(episodeRepository, cacheManager, Episode);
+    super(episodeRepository, cacheService, Episode);
   }
 }

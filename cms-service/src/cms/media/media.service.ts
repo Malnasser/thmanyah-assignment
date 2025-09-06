@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MediaUpload } from './entities/media.entity';
 import { Upload } from '@aws-sdk/lib-storage';
 import { BaseService } from '../common/base/base.service';
-import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+import { ICacheService } from 'src/core/cache/interfaces/cache-service.interface';
 import { MediaRepository } from './media.repository';
 
 @Injectable()
@@ -12,9 +12,9 @@ export class MediaService extends BaseService<MediaUpload> {
 
   constructor(
     private readonly mediaRepository: MediaRepository,
-    @Inject(CACHE_MANAGER) cacheManager: Cache,
+    @Inject('ICacheService') cacheService: ICacheService,
   ) {
-    super(mediaRepository, cacheManager, MediaUpload);
+    super(mediaRepository, cacheService, MediaUpload);
     this.s3 = new S3Client({
       region: process.env.AWS_REGION,
       endpoint: process.env.AWS_ENDPOINT,

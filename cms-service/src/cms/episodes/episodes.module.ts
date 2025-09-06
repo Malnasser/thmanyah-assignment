@@ -4,9 +4,10 @@ import { EpisodesController } from './episodes.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Episode } from './entities/episode.entity';
 import { EpisodeRepository } from './episodes.repository';
+import { CacheModule } from 'src/core/cache/cache.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Episode])],
+  imports: [TypeOrmModule.forFeature([Episode]), CacheModule],
   controllers: [EpisodesController],
   providers: [EpisodesService, EpisodeRepository],
 })

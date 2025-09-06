@@ -1,7 +1,7 @@
 import { FindManyOptions, DeepPartial, FindOptionsOrder } from 'typeorm';
 import { Inject } from '@nestjs/common';
-import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { IBaseService, IBaseRepository } from './interfaces';
+import { ICacheService } from 'src/core/cache/interfaces/cache-service.interface';
 
 export abstract class BaseService<T> implements IBaseService<T> {
   protected baseRepository: IBaseRepository<T>;
@@ -9,52 +9,22 @@ export abstract class BaseService<T> implements IBaseService<T> {
   get repository(): IBaseRepository<T> {
     return this.baseRepository;
   }
-  protected cacheManager: Cache;
   protected entityType: new () => T;
 
   constructor(
     baseRepository: IBaseRepository<T>,
-    @Inject(CACHE_MANAGER) cacheManager: Cache,
+    @Inject('ICacheService') protected cacheService: ICacheService,
     entityType: new () => T,
   ) {
     this.baseRepository = baseRepository;
-    this.cacheManager = cacheManager;
     this.entityType = entityType;
   }
 
-  protected getCacheKey(
-    id?: string | number | Partial<T>,
-    select?: (keyof T)[] | undefined,
-  ): string {
-    const entityName = this.entityType.name.toLowerCase();
-    const key = id
-      ? typeof id === 'object'
-        ? `${entityName}_${JSON.stringify(id)}`
-        : `${entityName}_${id}`
-      : `all_${entityName}s`;
-    const selectKey = select && select.length > 0 ? select.join(',') : 'all';
-    const finalKey = `${key}_select_${selectKey}`;
-    console.log(`Generated cache key: ${finalKey}`);
-    return finalKey;
-  }
-
-  protected getPaginationCacheKey(
-    page: number,
-    limit: number,
-    condition?: Partial<T>,
-    select?: (keyof T)[] | undefined,
-    sort?: FindOptionsOrder<T>,
-  ): string {
-    const entityName = this.entityType.name.toLowerCase();
-    const conditionKey = condition ? JSON.stringify(condition) : 'all';
-    const selectKey = select && select.length > 0 ? select.join(',') : 'all';
-    const sortKey = sort ? JSON.stringify(sort) : 'all';
-    return `${entityName}_page_${page}_limit_${limit}_${conditionKey}_select_${selectKey}_sort_${sortKey}`;
-  }
+  
 
   async create(entity: DeepPartial<T>): Promise<T> {
     const createdEntity = await this.baseRepository.create(entity);
-    await this.cacheManager.del(this.getCacheKey());
+    await this.cacheService.del(this.cacheService.getCacheKey(undefined, undefined, this.entityType));
     return createdEntity;
   }
 
@@ -63,9 +33,9 @@ export abstract class BaseService<T> implements IBaseService<T> {
     select?: (keyof T)[] | undefined,
     relations?: string[],
   ): Promise<T | null> {
-    const cacheKey = this.getCacheKey(id, select);
+    const cacheKey = this.cacheService.getCacheKey(id, select, this.entityType);
     console.log(`Attempting to get from cache with key: ${cacheKey}`);
-    const cachedData = await this.cacheManager.get<T>(cacheKey);
+    const cachedData = await this.cacheService.get<T>(cacheKey);
     if (cachedData) {
       console.log(`Cache hit for key: ${cacheKey}`);
       return cachedData;
@@ -76,7 +46,7 @@ export abstract class BaseService<T> implements IBaseService<T> {
       console.log(
         `Data fetched from repository. Setting cache for key: ${cacheKey}`,
       );
-      await this.cacheManager.set(cacheKey, data, 60 * 60 * 1000); // 1 hour TTL
+      await this.cacheService.set(cacheKey, data, 60 * 60 * 1000); // 1 hour TTL
     } else {
       console.log(`No data found from repository for key: ${cacheKey}`);
     }
@@ -84,9 +54,9 @@ export abstract class BaseService<T> implements IBaseService<T> {
   }
 
   async findAll(options?: FindManyOptions<T>): Promise<T[]> {
-    const cacheKey = this.getCacheKey();
+    const cacheKey = this.cacheService.getCacheKey(undefined, undefined, this.entityType);
     console.log(`Attempting to get from cache with key: ${cacheKey}`);
-    const cachedData = await this.cacheManager.get<T[]>(cacheKey);
+    const cachedData = await this.cacheService.get<T[]>(cacheKey);
     if (cachedData) {
       console.log(`Cache hit for key: ${cacheKey}`);
       return cachedData;
@@ -96,20 +66,20 @@ export abstract class BaseService<T> implements IBaseService<T> {
     console.log(
       `Data fetched from repository. Setting cache for key: ${cacheKey}`,
     );
-    await this.cacheManager.set(cacheKey, data, 60 * 60 * 1000); // 1 hour TTL
+    await this.cacheService.set(cacheKey, data, 60 * 60 * 1000); // 1 hour TTL
     return data;
   }
 
   async update(id: string | number, entity: Partial<T>): Promise<T | null> {
     const updatedEntity = await this.baseRepository.update(id, entity);
     console.log(
-      `Invalidating cache for all entities with key: ${this.getCacheKey()}`,
+      `Invalidating cache for all entities with key: ${this.cacheService.getCacheKey(undefined, undefined, this.entityType)}`,
     );
-    await this.cacheManager.del(this.getCacheKey()); // Invalidate all
+    await this.cacheService.del(this.cacheService.getCacheKey(undefined, undefined, this.entityType)); // Invalidate all
     console.log(
-      `Invalidating cache for specific entity with key: ${this.getCacheKey(id)}`,
+      `Invalidating cache for specific entity with key: ${this.cacheService.getCacheKey(id, undefined, this.entityType)}`,
     );
-    await this.cacheManager.del(this.getCacheKey(id)); // Invalidate specific
+    await this.cacheService.del(this.cacheService.getCacheKey(id, undefined, this.entityType)); // Invalidate specific
     return updatedEntity;
   }
 
@@ -121,22 +91,22 @@ export abstract class BaseService<T> implements IBaseService<T> {
     const result = await this.baseRepository.delete(id);
     if (result) {
       console.log(
-        `Invalidating cache for all entities with key: ${this.getCacheKey()}`,
+        `Invalidating cache for all entities with key: ${this.cacheService.getCacheKey(undefined, undefined, this.entityType)}`,
       );
-      await this.cacheManager.del(this.getCacheKey()); // Invalidate all
+      await this.cacheService.del(this.cacheService.getCacheKey(undefined, undefined, this.entityType)); // Invalidate all
       console.log(
-        `Invalidating cache for specific entity with key: ${this.getCacheKey(id)}`,
+        `Invalidating cache for specific entity with key: ${this.cacheService.getCacheKey(id, undefined, this.entityType)}`,
       );
-      await this.cacheManager.del(this.getCacheKey(id)); // Invalidate specific
+      await this.cacheService.del(this.cacheService.getCacheKey(id, undefined, this.entityType)); // Invalidate specific
       return entityToDelete;
     }
     return null;
   }
 
   async findOne(condition: Partial<T>): Promise<T | null> {
-    const cacheKey = this.getCacheKey(condition);
+    const cacheKey = this.cacheService.getCacheKey(condition, undefined, this.entityType);
     console.log(`Attempting to get from cache with key: ${cacheKey}`);
-    const cachedData = await this.cacheManager.get<T>(cacheKey);
+    const cachedData = await this.cacheService.get<T>(cacheKey);
     if (cachedData) {
       console.log(`Cache hit for key: ${cacheKey}`);
       return cachedData;
@@ -147,7 +117,7 @@ export abstract class BaseService<T> implements IBaseService<T> {
       console.log(
         `Data fetched from repository. Setting cache for key: ${cacheKey}`,
       );
-      await this.cacheManager.set(cacheKey, data, 60 * 60 * 1000);
+      await this.cacheService.set(cacheKey, data, 60 * 60 * 1000);
     } else {
       console.log(`No data found from repository for key: ${cacheKey}`);
     }
@@ -170,16 +140,17 @@ export abstract class BaseService<T> implements IBaseService<T> {
     sort?: Record<string, 'ASC' | 'DESC'>,
     relations?: string[],
   ): Promise<{ data: T[]; total: number; page: number; limit: number }> {
-    const cacheKey = this.getPaginationCacheKey(
+    const cacheKey = this.cacheService.getPaginationCacheKey(
       page,
       limit,
       filter,
       select,
-      sort as FindOptionsOrder<T>,
+      sort as Record<string, 'ASC' | 'DESC'>,
+      this.entityType,
     );
 
     console.log(`Attempting to get paginated cache with key: ${cacheKey}`);
-    const cachedData = await this.cacheManager.get<{
+    const cachedData = await this.cacheService.get<{
       data: T[];
       total: number;
     }>(cacheKey);
@@ -202,7 +173,7 @@ export abstract class BaseService<T> implements IBaseService<T> {
     );
 
     console.log(`Setting paginated cache for key: ${cacheKey}`);
-    await this.cacheManager.set(
+    await this.cacheService.set(
       cacheKey,
       { data: result.data, total: result.total },
       60 * 60 * 1000,

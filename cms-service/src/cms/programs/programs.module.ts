@@ -6,9 +6,10 @@ import { Program } from './entities';
 import { ProgramRepository } from './programs.repository';
 import { MediaModule } from '../media/media.module';
 import { CategoriesModule } from '../categories/categories.module';
+import { CacheModule } from 'src/core/cache/cache.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Program]), MediaModule, CategoriesModule],
+  imports: [TypeOrmModule.forFeature([Program]), MediaModule, CategoriesModule, CacheModule],
   controllers: [ProgramsController],
   providers: [ProgramsService, ProgramRepository],
   exports: [ProgramsService],

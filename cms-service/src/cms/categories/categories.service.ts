@@ -2,15 +2,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { BaseService } from '../../cms/common/base/base.service';
 import { Category } from './entities/category.entity';
 import { CategoryRepository } from './categories.repository';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
+import { ICacheService } from 'src/core/cache/interfaces/cache-service.interface';
 
 @Injectable()
 export class CategoriesService extends BaseService<Category> {
   constructor(
     private readonly categoryRepository: CategoryRepository,
-    @Inject(CACHE_MANAGER) cacheManager: Cache,
+    @Inject('ICacheService') cacheService: ICacheService,
   ) {
-    super(categoryRepository, cacheManager, Category);
+    super(categoryRepository, cacheService, Category);
   }
 }
