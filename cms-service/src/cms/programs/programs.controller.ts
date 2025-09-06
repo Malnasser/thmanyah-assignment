@@ -141,6 +141,7 @@ export class ProgramsController extends BaseController<Program> {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete program' })
   @ApiParam({ name: 'id', type: String, description: 'Program ID' })
   @ApiResponse({
     status: 200,
@@ -163,6 +164,17 @@ export class ProgramsController extends BaseController<Program> {
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Upload a poster for a program' })
   @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   @ApiParam({ name: 'id', type: String, description: 'Program ID' })
   @ApiResponse({
     status: 200,
@@ -178,7 +190,7 @@ export class ProgramsController extends BaseController<Program> {
       throw new BadRequestException('File is not an image');
     }
 
-    const existingProgram = this.programsService.findById(id);
+    const existingProgram = await this.programsService.findById(id);
     if (!existingProgram) {
       throw new NotFoundException('Program is not found');
     }
