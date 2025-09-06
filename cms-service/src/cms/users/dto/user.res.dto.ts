@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../entities';
+import { User } from '@cms/users/entities';
 
 export class UserResDto {
   @ApiProperty({

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Category } from '../entities/category.entity';
+import { Category } from '@cms/categories/entities/category.entity';
 
 export class CategoryResDto {
   @ApiProperty({

@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { MediaUpload } from './entities';
-import { BaseService } from '../common/base/base.service';
-import { ICacheService } from 'src/core/cache/interfaces/cache-service.interface';
+import { BaseService } from '@cms/common/base/base.service';
+import { ICacheService } from '@core/cache/interfaces/cache-service.interface';
 import { MediaRepository } from './media.repository';
-import { IS3Service } from 'src/core/s3/interfaces/s3-service.interface';
+import { IS3Service } from '@core/s3/interfaces/s3-service.interface';
 
 @Injectable()
 export class MediaService extends BaseService<MediaUpload> {

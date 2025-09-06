@@ -20,8 +20,8 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Episode } from './entities/episode.entity';
-import { BaseController } from '../common/base/base.controller';
-import { PaginationQueryDto } from '../common/base/dto/pagination-query.dto';
+import { BaseController } from '@cms/common/base/base.controller';
+import { PaginationQueryDto } from '@cms/common/base/dto/pagination-query.dto';
 
 @ApiTags('Episodes')
 @Controller('episodes')

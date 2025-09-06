@@ -4,9 +4,9 @@ import { ProgramsController } from './programs.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Program } from './entities';
 import { ProgramRepository } from './programs.repository';
-import { MediaModule } from '../media/media.module';
-import { CategoriesModule } from '../categories/categories.module';
-import { CacheModule } from 'src/core/cache/cache.module';
+import { MediaModule } from '@cms/media/media.module';
+import { CategoriesModule } from '@cms/categories/categories.module';
+import { CacheModule } from '@core/cache/cache.module';
 
 @Module({
   imports: [

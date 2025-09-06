@@ -1,10 +1,10 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { BaseService } from '../common/base/base.service';
+import { BaseService } from '@cms/common/base/base.service';
 import { Program } from './entities';
 import { ProgramRepository } from './programs.repository';
-import { ICacheService } from 'src/core/cache/interfaces/cache-service.interface';
+import { ICacheService } from '@core/cache/interfaces/cache-service.interface';
 import { DeepPartial } from 'typeorm';
-import { CategoriesService } from '../categories/categories.service';
+import { CategoriesService } from '@cms/categories/categories.service';
 
 @Injectable()
 export class ProgramsService extends BaseService<Program> {

@@ -24,8 +24,8 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { MediaUpload } from './entities';
-import { PaginationQueryDto } from '../common/base/dto/pagination-query.dto';
-import { BaseController } from '../common/base/base.controller';
+import { PaginationQueryDto } from '@cms/common/base/dto/pagination-query.dto';
+import { BaseController } from '@cms/common/base/base.controller';
 import {
   MediaResDto,
   MediaPaginationDto,

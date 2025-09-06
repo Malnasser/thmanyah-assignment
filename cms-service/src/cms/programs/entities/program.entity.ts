@@ -6,13 +6,13 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import { Episode } from '../../episodes/entities/episode.entity';
-import { Language } from '../../common/enums/language.enum';
-import { MediaType } from '../../common/enums/media-type.enum';
-import { MediaUpload } from '../../media/entities/media.entity';
-import { Category } from '../../../cms/categories/entities/category.entity';
-import { ContentStatus } from '../../common/enums/content-status.enum';
-import { BaseEntity } from '../../common/base/base.entity';
+import { Episode } from '@cms/episodes/entities/episode.entity';
+import { Language } from '@cms/common/enums/language.enum';
+import { MediaType } from '@cms/common/enums/media-type.enum';
+import { MediaUpload } from '@cms/media/entities/media.entity';
+import { Category } from '@cms/categories/entities/category.entity';
+import { ContentStatus } from '@cms/common/enums/content-status.enum';
+import { BaseEntity } from '@core/database/base.entity';
 
 @Entity('programs')
 @Index('idx_program_title', ['title'])

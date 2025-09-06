@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany } from 'typeorm';
-import { Program } from '../../../cms/programs/entities/program.entity';
+import { Program } from '@cms/programs/entities/program.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { BaseEntity } from '../../common/base/base.entity';
+import { BaseEntity } from '@core/database/base.entity';
 
 @Entity('categories')
 export class Category extends BaseEntity {

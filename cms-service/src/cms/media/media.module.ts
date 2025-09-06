@@ -4,7 +4,7 @@ import { MediaController } from './media.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MediaUpload } from './entities';
 import { MediaRepository } from './media.repository';
-import { CoreModule } from 'src/core/core.module';
+import { CoreModule } from '@core/core.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([MediaUpload]), CoreModule],

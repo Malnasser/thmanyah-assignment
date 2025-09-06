@@ -4,7 +4,7 @@ import { CategoriesController } from './categories.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { CategoryRepository } from './categories.repository';
-import { CacheModule } from 'src/core/cache/cache.module';
+import { CacheModule } from '@core/cache/cache.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Category]), CacheModule],

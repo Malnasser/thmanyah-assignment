@@ -7,7 +7,7 @@ import {
   Query,
   NotFoundException,
 } from '@nestjs/common';
-import { BaseController } from '../common/base/base.controller';
+import { BaseController } from '@cms/common/base/base.controller';
 import { User } from './entities';
 import { UsersService } from './users.service';
 import {
@@ -19,7 +19,7 @@ import {
   ApiTags,
   ApiQuery,
 } from '@nestjs/swagger';
-import { PaginationQueryDto } from '../common/base/dto/pagination-query.dto';
+import { PaginationQueryDto } from '@cms/common/base/dto/pagination-query.dto';
 import { UpdateUserDto, UserPaginationDto, UserResDto } from './dto';
 
 @ApiTags('Users')

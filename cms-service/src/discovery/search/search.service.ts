@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { SearchProgramDto } from './dto/search-program.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { ProgramsService } from 'src/cms/programs';
 import { Like } from 'typeorm';
+import { ProgramsService } from '@cms/programs/programs.service';
 
 @ApiTags('Search')
 @Injectable()

@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import { Episode } from './entities/episode.entity';
-import { BaseRepository } from '../common/base/base.repository';
+import { BaseRepository } from '@cms/common/base/base.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 

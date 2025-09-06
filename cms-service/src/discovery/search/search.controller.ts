@@ -8,7 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { SearchProgramDto } from './dto/search-program.dto';
 import { SearchService } from './search.service';
-import { ProgramPaginationDto } from 'src/cms/programs/dto';
+import { ProgramPaginationDto } from '@cms/programs/dto';
 
 @ApiTags('Discovery')
 @Controller('discovery')

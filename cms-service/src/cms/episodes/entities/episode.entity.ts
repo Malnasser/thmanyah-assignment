@@ -1,9 +1,9 @@
 import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
-import { Program } from '../../programs/entities/program.entity';
+import { Program } from '@cms/programs/entities/program.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { MediaUpload } from '../../media/entities/media.entity';
-import { ContentStatus } from '../../common/enums/content-status.enum';
-import { BaseEntity } from '../../common/base/base.entity';
+import { MediaUpload } from '@cms/media/entities/media.entity';
+import { ContentStatus } from '@cms/common/enums/content-status.enum';
+import { BaseEntity } from '@core/database/base.entity';
 
 @Entity('episodes')
 @Index('idx_episode_title', ['title'])

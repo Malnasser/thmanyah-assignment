@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ContentStatus, Language, MediaType } from 'src/cms/common/enums';
+import { ContentStatus, Language, MediaType } from '@cms/common/enums';
 
 export class CreateProgramReqDto {
   @ApiProperty({ example: 'My Awesome Program' })

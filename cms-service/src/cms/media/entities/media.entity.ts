@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany } from 'typeorm';
-import { Program } from '../../programs/entities/program.entity';
-import { Episode } from '../../episodes/entities/episode.entity';
-import { BaseEntity } from '../../common/base/base.entity';
+import { Program } from '@cms/programs/entities/program.entity';
+import { Episode } from '@cms/episodes/entities/episode.entity';
+import { BaseEntity } from '@core/database/base.entity';
 
 @Entity('media_uploads')
 export class MediaUpload extends BaseEntity {

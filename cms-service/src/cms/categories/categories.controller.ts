@@ -22,8 +22,8 @@ import {
   ApiForbiddenResponse,
 } from '@nestjs/swagger';
 import { Category } from './entities/category.entity';
-import { BaseController } from '../../cms/common/base/base.controller';
-import { PaginationQueryDto } from '../../cms/common/base/dto/pagination-query.dto';
+import { BaseController } from '@common/base/base.controller';
+import { PaginationQueryDto } from '@common/base/dto/pagination-query.dto';
 import {
   CreateCategoryDto,
   UpdateCategoryDto,

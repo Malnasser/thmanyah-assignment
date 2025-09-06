@@ -31,9 +31,9 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { ProgramsService } from './programs.service';
-import { MediaService } from '../media/media.service';
-import { Program } from './entities';
-import { BaseController } from '../common/base/base.controller';
+import { MediaService } from '@cms/media/media.service';
+import { BaseController } from '@cms/common/base/base.controller';
+import { PaginationQueryDto } from '@cms/common/base/dto/pagination-query.dto';
 
 import {
   ProgramPaginationDto,
@@ -41,7 +41,7 @@ import {
   CreateProgramReqDto,
   ProgramResDto,
 } from './dto';
-import { PaginationQueryDto } from '../common/base/dto/pagination-query.dto';
+import { Program } from './entities';
 
 import { Express } from 'express';
 

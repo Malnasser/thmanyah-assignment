@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { BaseService } from '../common/base/base.service';
+import { BaseService } from '@cms/common/base/base.service';
 import { Episode } from './entities/episode.entity';
 import { EpisodeRepository } from './episodes.repository';
-import { ICacheService } from 'src/core/cache/interfaces/cache-service.interface';
+import { ICacheService } from '@core/cache/interfaces/cache-service.interface';
 
 @Injectable()
 export class EpisodesService extends BaseService<Episode> {

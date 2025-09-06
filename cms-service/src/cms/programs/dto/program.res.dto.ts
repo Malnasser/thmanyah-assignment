@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { ContentStatus, Language, MediaType } from 'src/cms/common/enums';
-import { Program } from '../entities';
-import { CategoryResDto } from 'src/cms/categories/dto';
-import { MediaUploadDto } from 'src/cms/media/dto';
+import { ContentStatus, Language, MediaType } from '@cms/common/enums';
+import { Program } from '@cms/programs/entities';
+import { CategoryResDto } from '@cms/categories/dto';
+import { MediaUploadDto } from '@cms/media/dto';
 
 export class ProgramResDto {
   @Expose()
