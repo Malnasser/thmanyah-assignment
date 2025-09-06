@@ -133,7 +133,7 @@ export class ProgramsController extends BaseController<Program> {
     }
     const entity = new Program();
     Object.assign(entity, updateProgramDto);
-    const updatedProgram = await super._update(id, entity);
+    const updatedProgram = await this.programsService.update(id, entity);
     if (!updatedProgram) {
       throw new NotFoundException('Program not found after update');
     }

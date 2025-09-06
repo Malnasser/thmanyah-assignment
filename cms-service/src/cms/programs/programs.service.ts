@@ -28,6 +28,20 @@ export class ProgramsService extends BaseService<Program> {
     return super.create(entity);
   }
 
+  async update(
+    id: string | number,
+    entity: Partial<Program>,
+  ): Promise<Program> {
+    if (entity.categoryId) {
+      const category = await this.categoryService.findById(entity.categoryId);
+      if (!category) {
+        throw new BadRequestException('Invalid categoryId');
+      }
+      entity.category = category;
+    }
+    return super.update(id, entity);
+  }
+
   async attachPoster(programId: string, mediaId: string) {
     const program = await this.programRepository.findById(programId);
     if (!program) throw new Error('Program not found');

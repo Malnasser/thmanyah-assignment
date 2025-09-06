@@ -20,11 +20,11 @@ export abstract class BaseService<T> implements IBaseService<T> {
     this.entityType = entityType;
   }
 
-  
-
   async create(entity: DeepPartial<T>): Promise<T> {
     const createdEntity = await this.baseRepository.create(entity);
-    await this.cacheService.del(this.cacheService.getCacheKey(undefined, undefined, this.entityType));
+    await this.cacheService.del(
+      this.cacheService.getCacheKey(undefined, undefined, this.entityType),
+    );
     return createdEntity;
   }
 
@@ -54,7 +54,11 @@ export abstract class BaseService<T> implements IBaseService<T> {
   }
 
   async findAll(options?: FindManyOptions<T>): Promise<T[]> {
-    const cacheKey = this.cacheService.getCacheKey(undefined, undefined, this.entityType);
+    const cacheKey = this.cacheService.getCacheKey(
+      undefined,
+      undefined,
+      this.entityType,
+    );
     console.log(`Attempting to get from cache with key: ${cacheKey}`);
     const cachedData = await this.cacheService.get<T[]>(cacheKey);
     if (cachedData) {
@@ -75,11 +79,15 @@ export abstract class BaseService<T> implements IBaseService<T> {
     console.log(
       `Invalidating cache for all entities with key: ${this.cacheService.getCacheKey(undefined, undefined, this.entityType)}`,
     );
-    await this.cacheService.del(this.cacheService.getCacheKey(undefined, undefined, this.entityType)); // Invalidate all
+    await this.cacheService.del(
+      this.cacheService.getCacheKey(undefined, undefined, this.entityType),
+    ); // Invalidate all
     console.log(
       `Invalidating cache for specific entity with key: ${this.cacheService.getCacheKey(id, undefined, this.entityType)}`,
     );
-    await this.cacheService.del(this.cacheService.getCacheKey(id, undefined, this.entityType)); // Invalidate specific
+    await this.cacheService.del(
+      this.cacheService.getCacheKey(id, undefined, this.entityType),
+    ); // Invalidate specific
     return updatedEntity;
   }
 
@@ -93,18 +101,26 @@ export abstract class BaseService<T> implements IBaseService<T> {
       console.log(
         `Invalidating cache for all entities with key: ${this.cacheService.getCacheKey(undefined, undefined, this.entityType)}`,
       );
-      await this.cacheService.del(this.cacheService.getCacheKey(undefined, undefined, this.entityType)); // Invalidate all
+      await this.cacheService.del(
+        this.cacheService.getCacheKey(undefined, undefined, this.entityType),
+      ); // Invalidate all
       console.log(
         `Invalidating cache for specific entity with key: ${this.cacheService.getCacheKey(id, undefined, this.entityType)}`,
       );
-      await this.cacheService.del(this.cacheService.getCacheKey(id, undefined, this.entityType)); // Invalidate specific
+      await this.cacheService.del(
+        this.cacheService.getCacheKey(id, undefined, this.entityType),
+      ); // Invalidate specific
       return entityToDelete;
     }
     return null;
   }
 
   async findOne(condition: Partial<T>): Promise<T | null> {
-    const cacheKey = this.cacheService.getCacheKey(condition, undefined, this.entityType);
+    const cacheKey = this.cacheService.getCacheKey(
+      condition,
+      undefined,
+      this.entityType,
+    );
     console.log(`Attempting to get from cache with key: ${cacheKey}`);
     const cachedData = await this.cacheService.get<T>(cacheKey);
     if (cachedData) {
