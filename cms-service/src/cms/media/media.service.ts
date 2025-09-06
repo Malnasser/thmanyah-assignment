@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MediaUpload } from './entities/media.entity';
+import { MediaUpload } from './entities';
 import { BaseService } from '../common/base/base.service';
 import { ICacheService } from 'src/core/cache/interfaces/cache-service.interface';
 import { MediaRepository } from './media.repository';

@@ -3,7 +3,6 @@ import {
   Get,
   Param,
   Query,
-  BadRequestException,
   Post,
   Body,
   Patch,
@@ -24,18 +23,37 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { MediaUpload } from './entities/media.entity';
+import { MediaUpload } from './entities';
 import { PaginationQueryDto } from '../common/base/dto/pagination-query.dto';
 import { BaseController } from '../common/base/base.controller';
-import { MediaResDto } from './dto/media.res.dto';
-import { MediaPaginationDto } from './dto/media-pagination.dto.res';
-import { UpdateMediaDto } from './dto/update-media.dto';
+import {
+  MediaResDto,
+  MediaPaginationDto,
+  CreateMediaDto,
+  UpdateMediaDto,
+} from './dto';
 
 @ApiTags('Media')
 @Controller('media')
 export class MediaController extends BaseController<MediaUpload> {
   constructor(private readonly mediaService: MediaService) {
     super(mediaService);
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Create media' })
+  @ApiCreatedResponse({
+    description: 'The media has been successfully created.',
+    type: MediaResDto,
+  })
+  @ApiBadRequestResponse({ description: 'Bad Request.' })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
+  @ApiBearerAuth()
+  async create(@Body() createMediaDto: CreateMediaDto): Promise<MediaResDto> {
+    const entity = new MediaUpload();
+    Object.assign(entity, createMediaDto);
+    const saved = await this.mediaService.create(entity);
+    return MediaResDto.fromEntity(saved);
   }
 
   @Get()
@@ -72,6 +90,55 @@ export class MediaController extends BaseController<MediaUpload> {
     if (!result) {
       throw new NotFoundException('Media not found');
     }
+    return MediaResDto.fromEntity(result);
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update media' })
+  @ApiParam({ name: 'id', type: String, description: 'Media ID' })
+  @ApiBody({
+    type: UpdateMediaDto,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The media has been successfully updated.',
+    type: MediaResDto,
+  })
+  @ApiBearerAuth()
+  async update(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Body() updateMediaDto: UpdateMediaDto,
+  ): Promise<MediaResDto> {
+    const existingMedia = await this.mediaService.findById(id);
+    if (!existingMedia) {
+      throw new NotFoundException('Media not found');
+    }
+    const entity = new MediaUpload();
+    Object.assign(entity, updateMediaDto);
+    const updatedMedia = await this.mediaService.update(id, entity);
+    if (!updatedMedia) {
+      throw new NotFoundException('Media not found after update');
+    }
+    return MediaResDto.fromEntity(updatedMedia);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete media' })
+  @ApiParam({ name: 'id', type: String, description: 'Media ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The media has been successfully deleted.',
+    type: MediaResDto,
+  })
+  @ApiBearerAuth()
+  async remove(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ): Promise<MediaResDto> {
+    const existingMedia = await this.mediaService.findById(id);
+    if (!existingMedia) {
+      throw new NotFoundException('Media Not Found');
+    }
+    const result = await super._remove(id);
     return MediaResDto.fromEntity(result);
   }
 }
