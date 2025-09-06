@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../entities/user.entity';
+import { UserResDto } from './user.res.dto';
 
 export class UserPaginationDto {
-  @ApiProperty({ type: [User] })
-  data: User[];
+  @ApiProperty({ type: [UserResDto] })
+  data: UserResDto[];
 
   @ApiProperty({ example: 100 })
   total: number;
@@ -13,4 +13,13 @@ export class UserPaginationDto {
 
   @ApiProperty({ example: 10 })
   limit: number;
+
+  static fromPaginated(result: { data: any[]; total: number; page: number; limit: number }): UserPaginationDto {
+    const dto = new UserPaginationDto();
+    dto.data = result.data.map(UserResDto.fromEntity);
+    dto.total = result.total;
+    dto.page = result.page;
+    dto.limit = result.limit;
+    return dto;
+  }
 }

@@ -5,14 +5,11 @@ import {
   Param,
   Patch,
   Query,
-  Post,
-  Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { BaseController } from '../common/base/base.controller';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -20,35 +17,19 @@ import {
   ApiParam,
   ApiResponse,
   ApiTags,
+  ApiCreatedResponse,
+  ApiBadRequestResponse,
+  ApiConflictResponse,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { PaginationQueryDto } from '../common/base/dto/pagination-query.dto';
-import { UserPaginationDto } from './dto/user-pagination.dto';
+import { UpdateUserDto, UserPaginationDto, UserResDto } from './dto';
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController extends BaseController<User> {
   constructor(private readonly userService: UsersService) {
     super(userService);
-  }
-
-  @Post()
-  @ApiOperation({ summary: 'Create user' })
-  @ApiBody({ type: CreateUserDto })
-  @ApiResponse({
-    status: 201,
-    description: 'User created successfully.',
-    type: User,
-  })
-  @ApiResponse({ status: 400, description: 'Bad Request.' })
-  @ApiResponse({
-    status: 409,
-    description: 'Conflict (User with email already exists).',
-  })
-  @ApiBearerAuth()
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    const entity = new User();
-    Object.assign(entity, createUserDto);
-    return super._create(entity);
   }
 
   @Get()
@@ -58,24 +39,35 @@ export class UsersController extends BaseController<User> {
   async findAll(
     @Query() query: PaginationQueryDto,
   ): Promise<UserPaginationDto> {
-    return super._findAll(query);
+    const result = await super._findAll(query);
+    return UserPaginationDto.fromPaginated(result);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get user by id' })
   @ApiParam({ name: 'id', type: String, description: 'User ID' })
+  @ApiQuery({
+    name: 'select',
+    type: String,
+    required: false,
+    description: 'Comma separated fields to select',
+  })
   @ApiResponse({
     status: 200,
     description: 'Return user by id.',
-    type: User,
+    type: UserResDto,
   })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @ApiBearerAuth()
   async findOne(
     @Param('id') id: string,
     @Query('select') select?: string,
-  ): Promise<User | null> {
-    return super._findOne(id, select);
+  ): Promise<UserResDto | null> {
+    const result = await super._findOne(id, select);
+    if (!result) {
+      throw new NotFoundException('User not found');
+    }
+    return UserResDto.fromEntity(result);
   }
 
   @Patch(':id')
@@ -98,7 +90,7 @@ export class UsersController extends BaseController<User> {
   @ApiResponse({
     status: 200,
     description: 'The user has been successfully updated.',
-    type: User,
+    type: UserResDto,
   })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
@@ -106,23 +98,17 @@ export class UsersController extends BaseController<User> {
   async update(
     @Param('id') id: string,
     @Body() updateProgramDto: UpdateUserDto,
-  ): Promise<User | null> {
+  ): Promise<UserResDto | null> {
+    const existingUser = await this.userService.findById(id);
+    if (!existingUser) {
+      throw new NotFoundException('User not found');
+    }
     const entity = new User();
     Object.assign(entity, updateProgramDto);
-    return super._update(id, entity);
-  }
-
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete user' })
-  @ApiParam({ name: 'id', type: String, description: 'User ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'The user has been successfully deleted.',
-    type: User,
-  })
-  @ApiResponse({ status: 404, description: 'User not found.' })
-  @ApiBearerAuth()
-  async remove(@Param('id') id: string): Promise<User | null> {
-    return super._remove(id);
+    const updatedUser = await super._update(id, entity);
+    if (!updatedUser) {
+      throw new NotFoundException('User not found after update');
+    }
+    return UserResDto.fromEntity(updatedUser);
   }
 }
