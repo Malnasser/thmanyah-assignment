@@ -7,10 +7,9 @@ import {
   Param,
   Delete,
   Query,
+  NotFoundException,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
 import {
   ApiOperation,
   ApiResponse,
@@ -18,10 +17,19 @@ import {
   ApiBody,
   ApiParam,
   ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiBadRequestResponse,
+  ApiForbiddenResponse,
 } from '@nestjs/swagger';
 import { Category } from './entities/category.entity';
 import { BaseController } from '../../cms/common/base/base.controller';
 import { PaginationQueryDto } from '../../cms/common/base/dto/pagination-query.dto';
+import {
+  CreateCategoryDto,
+  UpdateCategoryDto,
+  CategoryResDto,
+  CategoryPaginationDto,
+} from './dto';
 
 @ApiTags('Categories')
 @Controller('categories')
@@ -32,35 +40,31 @@ export class CategoriesController extends BaseController<Category> {
 
   @Post()
   @ApiOperation({ summary: 'Create category' })
-  @ApiBody({ type: CreateCategoryDto })
-  @ApiResponse({
-    status: 201,
+  @ApiCreatedResponse({
     description: 'The category has been successfully created.',
-    type: Category,
+    type: CategoryResDto,
   })
-  @ApiResponse({ status: 400, description: 'Bad Request.' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiBadRequestResponse({ description: 'Bad Request.' })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiBearerAuth()
   async create(
     @Body() createCategoryDto: CreateCategoryDto,
-  ): Promise<Category> {
+  ): Promise<CategoryResDto> {
     const entity = new Category();
     Object.assign(entity, createCategoryDto);
-    return super._create(entity);
+    const saved = await super._create(entity);
+    return CategoryResDto.fromEntity(saved);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all categories' })
-  @ApiResponse({
-    status: 200,
-    description: 'Return all categories.',
-    type: [Category],
-  })
+  @ApiResponse({ status: 200, type: CategoryPaginationDto })
   @ApiBearerAuth()
   async findAll(
     @Query() query: PaginationQueryDto,
-  ): Promise<{ data: Category[]; total: number; page: number; limit: number }> {
-    return super._findAll(query);
+  ): Promise<CategoryPaginationDto> {
+    const result = await super._findAll(query);
+    return CategoryPaginationDto.fromPaginated(result);
   }
 
   @Get(':id')
@@ -69,11 +73,15 @@ export class CategoriesController extends BaseController<Category> {
   @ApiResponse({
     status: 200,
     description: 'Return category by id.',
-    type: Category,
+    type: CategoryResDto,
   })
   @ApiBearerAuth()
-  async findOne(@Param('id') id: string): Promise<Category | null> {
-    return super._findOne(id);
+  async findOne(@Param('id') id: string): Promise<CategoryResDto | null> {
+    const result = await super._findOne(id);
+    if (!result) {
+      throw new NotFoundException('Category not found');
+    }
+    return CategoryResDto.fromEntity(result);
   }
 
   @Patch(':id')
@@ -83,16 +91,24 @@ export class CategoriesController extends BaseController<Category> {
   @ApiResponse({
     status: 200,
     description: 'The category has been successfully updated.',
-    type: Category,
+    type: CategoryResDto,
   })
   @ApiBearerAuth()
   async update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
-  ): Promise<Category | null> {
+  ): Promise<CategoryResDto | null> {
+    const existingCategory = await this.categoriesService.findById(id);
+    if (!existingCategory) {
+      throw new NotFoundException('Category not found');
+    }
     const entity = new Category();
     Object.assign(entity, updateCategoryDto);
-    return super._update(id, entity);
+    const updatedCategory = await super._update(id, entity);
+    if (!updatedCategory) {
+      throw new NotFoundException('Category not found after update');
+    }
+    return CategoryResDto.fromEntity(updatedCategory);
   }
 
   @Delete(':id')
@@ -101,10 +117,15 @@ export class CategoriesController extends BaseController<Category> {
   @ApiResponse({
     status: 200,
     description: 'The category has been successfully deleted.',
-    type: Category,
+    type: CategoryResDto,
   })
   @ApiBearerAuth()
-  async remove(@Param('id') id: string): Promise<Category | null> {
-    return super._remove(id);
+  async remove(@Param('id') id: string): Promise<CategoryResDto | null> {
+    const existingCategory = await this.categoriesService.findById(id);
+    if (!existingCategory) {
+      throw new NotFoundException('Category Not Found');
+    }
+    const result = await super._remove(id);
+    return CategoryResDto.fromEntity(result);
   }
 }

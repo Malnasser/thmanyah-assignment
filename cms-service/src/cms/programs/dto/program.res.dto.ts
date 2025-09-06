@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { ContentStatus, Language, MediaType } from 'src/cms/common/enums';
 import { Program } from '../entities';
-import { CategoryDto } from 'src/cms/categories/dto';
+import { CategoryResDto } from 'src/cms/categories/dto';
 import { MediaUploadDto } from 'src/cms/media/dto';
 
 export class ProgramResDto {
@@ -39,7 +39,7 @@ export class ProgramResDto {
 
   @Expose()
   @ApiProperty()
-  category: CategoryDto;
+  category: CategoryResDto;
 
   @Expose()
   @ApiProperty()
@@ -61,7 +61,7 @@ export class ProgramResDto {
     dto.metadata = program.metadata;
 
     if (program.category)
-      dto.category = CategoryDto.fromEntity(program.category);
+      dto.category = CategoryResDto.fromEntity(program.category);
     if (program.poster) dto.poster = MediaUploadDto.fromEntity(program.poster);
 
     return dto;
