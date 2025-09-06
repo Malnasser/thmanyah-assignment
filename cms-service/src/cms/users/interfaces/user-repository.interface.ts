@@ -1,4 +1,4 @@
-import { IBaseRepository } from 'src/cms/common/base/interfaces/base-repoitory.interface';
+import { IBaseRepository } from 'src/cms/common/base/interfaces';
 import { User } from '../entities/user.entity';
 
 export interface IUserRepository extends IBaseRepository<User> {

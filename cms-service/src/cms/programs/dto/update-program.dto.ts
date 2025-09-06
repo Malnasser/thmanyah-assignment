@@ -1,9 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateProgramReqDto } from './create-program.req.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { MediaType } from 'src/cms/common/enums/media-type.enum';
-import { Language } from 'src/cms/common/enums/language.enum';
-import { ContentStatus } from 'src/cms/common/enums/content-status.enum';
+import { MediaType, Language, ContentStatus } from 'src/cms/common/enums';
 
 export class UpdateProgramDto extends PartialType(CreateProgramReqDto) {
   @ApiProperty({ example: 'My Awesome Program' })

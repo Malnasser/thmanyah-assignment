@@ -6,7 +6,7 @@ import {
   FindOptionsOrder,
   EntityMetadata,
 } from 'typeorm';
-import { IBaseRepository } from './interfaces/base-repoitory.interface';
+import { IBaseRepository } from './interfaces';
 
 export abstract class BaseRepository<T> implements IBaseRepository<T> {
   protected repository: Repository<T>;

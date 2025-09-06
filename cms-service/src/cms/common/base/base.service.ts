@@ -1,8 +1,7 @@
 import { FindManyOptions, DeepPartial, FindOptionsOrder } from 'typeorm';
 import { Inject } from '@nestjs/common';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import { IBaseService } from './interfaces/base-service.interface';
-import { IBaseRepository } from './interfaces/base-repoitory.interface';
+import { IBaseService, IBaseRepository } from './interfaces';
 
 export abstract class BaseService<T> implements IBaseService<T> {
   protected baseRepository: IBaseRepository<T>;

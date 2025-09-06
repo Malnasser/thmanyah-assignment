@@ -1,8 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { ContentStatus } from 'src/cms/common/enums/content-status.enum';
-import { Language } from 'src/cms/common/enums/language.enum';
-import { MediaType } from 'src/cms/common/enums/media-type.enum';
+import { ContentStatus, Language, MediaType } from 'src/cms/common/enums';
 import { Program } from '../entities';
 import { CategoryDto } from 'src/cms/categories/dto';
 import { MediaUploadDto } from 'src/cms/media/dto';

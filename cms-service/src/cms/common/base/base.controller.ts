@@ -1,5 +1,5 @@
-import { PaginationQueryDto } from './dto/pagination-query.dto';
-import { IBaseService } from './interfaces/base-service.interface';
+import { PaginationQueryDto } from './dto';
+import { IBaseService } from './interfaces';
 import { BadRequestException } from '@nestjs/common';
 
 export abstract class BaseController<T> {
