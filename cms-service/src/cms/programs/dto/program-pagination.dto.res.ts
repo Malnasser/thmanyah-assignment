@@ -1,9 +1,17 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { ProgramResDto } from './program.res.dto';
 
 export class ProgramPaginationDto {
+  @ApiProperty({ type: [ProgramResDto] })
   data: ProgramResDto[];
+
+  @ApiProperty({ example: 100 })
   total: number;
+
+  @ApiProperty({ example: 1 })
   page: number;
+
+  @ApiProperty({ example: 10 })
   limit: number;
 
   static fromPaginated<

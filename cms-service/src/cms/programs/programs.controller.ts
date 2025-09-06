@@ -97,13 +97,13 @@ export class ProgramsController extends BaseController<Program> {
   @ApiResponse({
     status: 200,
     description: 'Return program by id.',
-    type: Program,
+    type: ProgramResDto,
   })
   @ApiBearerAuth()
   async findOne(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Query('select') select?: string,
-  ): Promise<ProgramResDto | null> {
+  ): Promise<ProgramResDto> {
     const result = await super._findOne(id, select, ['category', 'poster']);
     if (!result) {
       throw new NotFoundException('Program not found');
@@ -120,14 +120,14 @@ export class ProgramsController extends BaseController<Program> {
   @ApiResponse({
     status: 200,
     description: 'The program has been successfully updated.',
-    type: Program,
+    type: ProgramResDto,
   })
   @ApiBearerAuth()
   async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateProgramDto: UpdateProgramDto,
-  ): Promise<ProgramResDto | null> {
-    const existingProgram = await super._findOne(id);
+  ): Promise<ProgramResDto> {
+    const existingProgram = await this.programsService.findById(id);
     if (!existingProgram) {
       throw new NotFoundException('Program not found');
     }
@@ -145,43 +145,42 @@ export class ProgramsController extends BaseController<Program> {
   @ApiResponse({
     status: 200,
     description: 'The program has been successfully deleted.',
-    type: Program,
+    type: ProgramResDto,
   })
   @ApiBearerAuth()
-  async remove(@Param('id') id: string): Promise<Program | null> {
-    return super._remove(id);
+  async remove(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ): Promise<ProgramResDto> {
+    const existingProgram = await this.programsService.findById(id);
+    if (!existingProgram) {
+      throw new NotFoundException('Program Not Found');
+    }
+    const result = await super._remove(id);
+    return ProgramResDto.fromEntity(result);
   }
 
   @Post(':id/upload-poster')
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Upload a poster for a program' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    description: 'Poster image file',
-    required: true,
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
   @ApiParam({ name: 'id', type: String, description: 'Program ID' })
   @ApiResponse({
     status: 200,
-    description: 'The poster has been successfully uploaded.',
+    type: ProgramResDto,
   })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiBearerAuth()
   async uploadPoster(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @UploadedFile() file: Express.Multer.File,
-  ) {
+  ): Promise<ProgramResDto> {
     if (!file.mimetype.startsWith('image')) {
       throw new BadRequestException('File is not an image');
+    }
+
+    const existingProgram = this.programsService.findById(id);
+    if (!existingProgram) {
+      throw new NotFoundException('Program is not found');
     }
 
     const media = await this.mediaService.uploadToS3(
@@ -193,6 +192,6 @@ export class ProgramsController extends BaseController<Program> {
 
     const program = await this.programsService.attachPoster(id, media.id);
 
-    return { program, media };
+    return ProgramResDto.fromEntity(program);
   }
 }

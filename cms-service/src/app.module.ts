@@ -1,18 +1,13 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
 import { CmsModule } from './cms/cms.module';
-import { Program } from './cms/programs/entities/program.entity';
-import { User } from './cms/users/entities/user.entity';
-import { Episode } from './cms/episodes/entities/episode.entity';
 import { CoreModule } from './core/core.module';
 import { JwtAuthGuard } from './core/auth/guards/jwt-auth.guard';
 import { DiscoveryModule } from './discovery/discovery.module';
-import { MediaUpload } from './cms/media/entities/media.entity';
-import { Category } from './cms/categories/entities/category.entity';
+import { DatabaseModule } from './core/database/database.module'; // New import
 
 @Module({
   imports: [
@@ -34,22 +29,7 @@ import { Category } from './cms/categories/entities/category.entity';
     }),
     CmsModule,
     CoreModule,
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USER'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_NAME'),
-        entities: [Program, User, Episode, MediaUpload, Category],
-        migrations: [__dirname + '/../migrations/*.ts'],
-        synchronize: false,
-        logging: process.env.NODE_ENV == 'development',
-      }),
-      inject: [ConfigService],
-    }),
+    DatabaseModule, // Use the new DatabaseModule
     DiscoveryModule,
   ],
   controllers: [],

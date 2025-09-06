@@ -1,4 +1,9 @@
-import { DeepPartial, FindManyOptions, FindOptionsOrder, EntityMetadata } from 'typeorm';
+import {
+  DeepPartial,
+  FindManyOptions,
+  FindOptionsOrder,
+  EntityMetadata,
+} from 'typeorm';
 
 export interface IBaseRepository<T> {
   metadata: EntityMetadata;
@@ -9,7 +14,11 @@ export interface IBaseRepository<T> {
     relations?: string[],
   ): Promise<T | null>;
   findAll(options?: FindManyOptions<T>): Promise<T[]>;
-  update(id: string | number, entity: Partial<T>): Promise<T | null>;
+  update(
+    id: string | number,
+    entity: Partial<T>,
+    relations?: string[],
+  ): Promise<T | null>;
   delete(id: string | number): Promise<boolean>;
   findOne(condition: Partial<T>): Promise<T | null>;
   count(condition?: Partial<T>): Promise<number>;

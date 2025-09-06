@@ -1,10 +1,10 @@
 import { DataSource } from 'typeorm';
-import { Program } from './cms/programs/entities/program.entity';
-import { Episode } from './cms/episodes/entities/episode.entity';
+import { Program } from '../../cms/programs/entities/program.entity';
+import { Episode } from '../../cms/episodes/entities/episode.entity';
 import { config } from 'dotenv';
-import { User } from './cms/users/entities/user.entity';
-import { MediaUpload } from './cms/media/entities/media.entity';
-import { Category } from './cms/categories/entities/category.entity';
+import { User } from '../../cms/users/entities/user.entity';
+import { MediaUpload } from '../../cms/media/entities/media.entity';
+import { Category } from '../../cms/categories/entities/category.entity';
 
 config();
 
