@@ -24,7 +24,6 @@ export class PaginationQueryDto {
   @ApiPropertyOptional({
     description: 'Items per page',
     default: 10,
-    example: 10,
     minimum: 5,
     maximum: 100,
   })
@@ -37,7 +36,6 @@ export class PaginationQueryDto {
 
   @ApiPropertyOptional({
     description: 'Filter expression (e.g., field:value)',
-    example: 'status:active',
   })
   @IsOptional()
   @IsString()
@@ -46,7 +44,6 @@ export class PaginationQueryDto {
 
   @ApiPropertyOptional({
     description: 'Select specific fields (comma separated)',
-    example: 'id,name,email',
   })
   @IsOptional()
   @IsString()
@@ -55,7 +52,6 @@ export class PaginationQueryDto {
 
   @ApiPropertyOptional({
     description: 'Sort expression (e.g., createdAt:desc)',
-    example: 'createdAt:desc',
   })
   @IsOptional()
   @IsString()
