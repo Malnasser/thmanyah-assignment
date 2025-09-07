@@ -6,13 +6,13 @@ export class AddProgramFullTextTrigger1688888888889
   public async up(queryRunner: QueryRunner): Promise<void> {
     // 1️⃣ Create a function to update search_vector
     await queryRunner.query(`
-      CREATE FUNCTION programs_search_vector_update() RETURNS trigger AS $$
+      CREATE FUNCTION programs_search_vector_update() RETURNS trigger AS $
       BEGIN
         NEW.search_vector :=
           to_tsvector('english', coalesce(NEW.title,'') || ' ' || coalesce(NEW.description,''));
         RETURN NEW;
       END;
-      $$ LANGUAGE plpgsql;
+      $ LANGUAGE plpgsql;
     `);
 
     // 2️⃣ Create the trigger to run before INSERT or UPDATE

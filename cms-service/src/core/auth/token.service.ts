@@ -17,13 +17,13 @@ export class TokenService implements ITokenService {
     const payload = { sub: user.id, email: user.email };
 
     const accessToken = this.jwtService.sign(payload, {
-      secret: this.config.get<string>('JWT_ACCESS_SECRET'),
-      expiresIn: this.config.get<string>('JWT_ACCESS_EXPIRES_IN', '15m'),
+      secret: this.config.get<string>('app.jwt.accessSecret'),
+      expiresIn: this.config.get<string>('app.jwt.accessExpiresIn'),
     });
 
     const refreshToken = this.jwtService.sign(payload, {
       secret: this.config.get<string>('JWT_REFRESH_SECRET'),
-      expiresIn: this.config.get<string>('JWT_REFRESH_EXPIRES_IN', '7d'),
+      expiresIn: this.config.get<string>('app.jwt.refreshExpiresIn'),
     });
 
     return { accessToken, refreshToken };
@@ -32,7 +32,7 @@ export class TokenService implements ITokenService {
   async verifyRefreshToken(token: string): Promise<{ userId: string }> {
     try {
       const payload: any = this.jwtService.verify(token, {
-        secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+        secret: this.config.get<string>('app.jwt.refreshSecret'),
       });
       return { userId: payload.sub };
     } catch {

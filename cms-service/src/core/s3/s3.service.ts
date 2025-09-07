@@ -10,14 +10,14 @@ export class S3Service implements IS3Service {
 
   constructor(private readonly configService: ConfigService) {
     this.s3 = new S3Client({
-      region: this.configService.get<string>('AWS_REGION'),
-      endpoint: this.configService.get<string>('AWS_ENDPOINT'),
+      region: this.configService.get<string>('app.aws.region'),
+      endpoint: this.configService.get<string>('app.aws.endpoint'),
       forcePathStyle:
-        this.configService.get<string>('AWS_FORCE_PATH_STYLE') === 'true',
+        this.configService.get<boolean>('app.aws.forcePathStyle'),
       credentials: {
-        accessKeyId: this.configService.get<string>('AWS_ACCESS_KEY_ID'),
+        accessKeyId: this.configService.get<string>('app.aws.accessKeyId'),
         secretAccessKey: this.configService.get<string>(
-          'AWS_SECRET_ACCESS_KEY',
+          'app.aws.secretAccessKey',
         ),
       },
     });
@@ -32,7 +32,7 @@ export class S3Service implements IS3Service {
     fileName: string,
     mimeType: string,
   ): Promise<Upload> {
-    const bucketName = this.configService.get<string>('AWS_BUCKET_NAME');
+    const bucketName = this.configService.get<string>('app.aws.bucketName');
 
     const upload = new Upload({
       client: this.s3,

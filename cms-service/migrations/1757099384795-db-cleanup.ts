@@ -4,7 +4,7 @@ export class DbCleanup1757099384795 implements MigrationInterface {
     name = 'DbCleanup1757099384795'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "programs" DROP CONSTRAINT "fk_program_category"`);
+        await queryRunner.query(`ALTER TABLE "programs" DROP CONSTRAINT IF EXISTS "fk_program_category"`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {

@@ -12,8 +12,8 @@ import { redisStore } from 'cache-manager-redis-store';
       useFactory: async (configService: ConfigService) => ({
         store: await redisStore({
           socket: {
-            host: configService.get<string>('REDIS_HOST'),
-            port: configService.get<number>('REDIS_PORT'),
+            host: configService.get<string>('app.redis.host'),
+            port: configService.get<number>('app.redis.port'),
           },
           ttl: 60000, // optional, default TTL in ms
         }),
