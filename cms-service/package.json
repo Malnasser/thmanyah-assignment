@@ -18,9 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/core/database/data-source.ts",
-    "migration:run": "typeorm-ts-node-commonjs migration:run -d src/core/database/data-source.ts",
-    "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/core/database/data-source.ts"
+    "migration:generate": "ts-node -r dotenv/config -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate -d src/core/database/data-source.ts",
+    "migration:run": "ts-node -r dotenv/config -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d src/core/database/data-source.ts",
+    "migration:revert": "ts-node -r dotenv/config -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:revert -d src/core/database/data-source.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.882.0",
@@ -44,6 +44,7 @@
     "json5": "^2.2.3",
     "multer": "^2.0.2",
     "multer-s3": "^3.0.1",
+    "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.0",
@@ -60,6 +61,7 @@
     "@types/jest": "^29.5.2",
     "@types/multer": "^2.0.0",
     "@types/node": "^20.3.1",
+    "@types/passport": "^1.0.17",
     "@types/supertest": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",

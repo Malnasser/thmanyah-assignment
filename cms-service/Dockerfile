@@ -32,6 +32,7 @@ RUN npm install -g pnpm@8.15.6
 # Install dependencies only for production
 WORKDIR /app
 COPY --from=base /app/package.json /app/pnpm-lock.yaml ./
+COPY --from=base /app/tsconfig.json ./
 COPY --from=base /app/node_modules ./node_modules
 COPY --from=base /app/dist ./dist
 
@@ -45,4 +46,4 @@ RUN pnpm add tsconfig-paths
 EXPOSE 3000
 
 # Start the application with path resolution
-CMD ["node", "-r", "tsconfig-paths/register", "dist/main"]
+CMD ["node", "-r", "tsconfig-paths/register", "dist/src/main"]

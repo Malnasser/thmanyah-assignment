@@ -22,7 +22,7 @@ export class TokenService implements ITokenService {
     });
 
     const refreshToken = this.jwtService.sign(payload, {
-      secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+      secret: this.config.get<string>('app.jwt.refreshSecret'),
       expiresIn: this.config.get<string>('app.jwt.refreshExpiresIn'),
     });
 

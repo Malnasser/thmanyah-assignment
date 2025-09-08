@@ -63,7 +63,7 @@ services:
       # Database
       DB_HOST: db
       DB_PORT: 5432
-      DB_USER: user
+      DB_USERNAME: user
       DB_PASSWORD: password
       DB_NAME: database
 

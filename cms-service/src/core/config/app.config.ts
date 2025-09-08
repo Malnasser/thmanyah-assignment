@@ -14,8 +14,13 @@ export default registerAs('app', () => ({
 
   // JWT Configuration
   jwt: {
-    secret: process.env.JWT_SECRET,
-    expiresIn: process.env.JWT_EXPIRES_IN || 15000,
+    accessSecret: process.env.JWT_ACCESS_SECRET,
+    accessExpiresIn: parseInt(process.env.JWT_ACCESS_EXPIRES_IN || '3600', 10), // ✅ number
+    refreshSecret: process.env.JWT_REFRESH_SECRET,
+    refreshExpiresIn: parseInt(
+      process.env.JWT_REFRESH_EXPIRES_IN || '604800',
+      10,
+    ),
   },
 
   // Redis Configuration
