@@ -1,73 +1,42 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Thmanyah Streaming CMS - Service
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This directory contains the core backend service for the Thmanyah Streaming CMS. It is a [NestJS](https://nestjs.com/) application responsible for managing all CMS data, including programs, episodes, categories, users, and media assets.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Architecture
 
-## Description
+The service is built with a modular architecture, separating concerns into three main layers:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+-   `Core`: Handles cross-cutting concerns like authentication (`auth`), database configuration (`database`), caching (`cache`), application configuration (`config`), and object storage (`s3`).
+-   `CMS`: Contains the primary business logic for managing CMS entities. Each entity (e.g., `programs`, `episodes`, `categories`) has its own dedicated module.
+-   `Discovery`: Implements features related to content discovery, such as search functionality.
 
-## Installation
+## Getting Started
 
-```bash
-$ pnpm install
-```
+Instructions for running this service are part of the main project documentation. Please refer to the root `README.md` for detailed steps on running the service either with Docker or locally.
 
-## Running the app
+### Scripts
 
-```bash
-# development
-$ pnpm run start
+The following scripts are available in the `package.json`:
 
-# watch mode
-$ pnpm run start:dev
+| Script                 | Description                                                                 |
+| ---------------------- | --------------------------------------------------------------------------- |
+| `build`                | Compiles the TypeScript source code into JavaScript.                        |
+| `format`               | Formats code using Prettier.                                                |
+| `start`                | Runs the compiled application.                                              |
+| `start:dev`            | Runs the application in watch mode for development.                         |
+| `start:prod`           | Runs the application in production mode.                                    |
+| `lint`                 | Lints the codebase using ESLint.                                            |
+| `test`                 | Runs unit tests.                                                            |
+| `test:e2e`             | Runs end-to-end tests.                                                      |
+| `migration:generate`   | Generates a new TypeORM migration file based on entity changes.             |
+| `migration:run`        | Executes pending database migrations.                                       |
+| `migration:revert`     | Reverts the last executed migration.                                        |
 
-# production mode
-$ pnpm run start:prod
-```
+### Environment Variables
 
-## Test
+The service requires a set of environment variables to run correctly. These are defined in `src/.env.example`. For local development, create a `.env` file in the `src` directory and populate it with the necessary values.
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+# From the project root
+cp services/src/.env.example services/src/.env
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
