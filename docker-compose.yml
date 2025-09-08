@@ -72,6 +72,10 @@ services:
       REDIS_PORT: 6379
 
       # JWT
+      JWT_ACCESS_SECRET: my_secret_secret
+      JWT_ACCESS_EXPIRES_IN: 3600
+      JWT_REFRESH_SECRET: my_secret_secret
+      JWT_REFRESH_EXPIRES_IN: 604800
       JWT_SECRET: my_secret_secret
 
       # AWS S3 (MinIO)
