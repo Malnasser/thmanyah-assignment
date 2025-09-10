@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Program } from '@cms/programs/entities/program.entity';
 import { User } from '@cms/users/entities/user.entity';
-import { Episode } from '@cms/episodes/entities/episode.entity';
 import { MediaUpload } from '@cms/media/entities/media.entity';
 import { Category } from '@cms/categories/entities/category.entity';
 
@@ -18,7 +17,7 @@ import { Category } from '@cms/categories/entities/category.entity';
         username: configService.get<string>('app.database.username'),
         password: configService.get<string>('app.database.password'),
         database: configService.get<string>('app.database.name'),
-        entities: [Program, User, Episode, MediaUpload, Category],
+        entities: [Program, User, MediaUpload, Category],
         migrations: [__dirname + '/../../../migrations/*.ts'], // Adjusted path
         synchronize: false,
         logging: configService.get<string>('app.env') == 'development',

@@ -1,12 +1,4 @@
-import {
-  Entity,
-  Column,
-  OneToMany,
-  ManyToOne,
-  JoinColumn,
-  Index,
-} from 'typeorm';
-import { Episode } from '@cms/episodes/entities/episode.entity';
+import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
 import { Language } from '@cms/common/enums/language.enum';
 import { MediaType } from '@cms/common/enums/media-type.enum';
 import { MediaUpload } from '@cms/media/entities/media.entity';
@@ -58,9 +50,6 @@ export class Program extends BaseEntity {
 
   @Column({ type: 'uuid', nullable: true })
   categoryId: string;
-
-  @OneToMany(() => Episode, (episode) => episode.program, { cascade: true })
-  episodes: Episode[];
 
   @Column({
     type: 'enum',

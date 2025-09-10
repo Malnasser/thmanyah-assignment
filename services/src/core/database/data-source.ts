@@ -1,17 +1,12 @@
 import { DataSource } from 'typeorm';
 import { Program } from '@cms/programs/entities/program.entity';
-import { Episode } from '@cms/episodes/entities/episode.entity';
 import { User } from '@cms/users/entities/user.entity';
-import { MediaUpload } from '@cms/media/entities/media.entity';
 import { Category } from '@cms/categories/entities/category.entity';
 import { config } from 'dotenv';
+import { MediaUpload } from '@cms/media';
 
-// Only load dotenv in development/local environments
-if (process.env.NODE_ENV === 'local') {
-  config();
-}
+config();
 
-// Validate required environment variables
 const requiredEnvVars = ['DB_HOST', 'DB_USERNAME', 'DB_PASSWORD', 'DB_NAME'];
 for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
@@ -19,11 +14,7 @@ for (const envVar of requiredEnvVars) {
   }
 }
 
-console.log('Database configuration:');
-console.log('DB_HOST:', process.env.DB_HOST);
-console.log('DB_PORT:', process.env.DB_PORT);
-console.log('DB_USERNAME:', process.env.DB_USERNAME);
-console.log('DB_NAME:', process.env.DB_NAME);
+console.log(process.env.DB_PASSWORD);
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -32,12 +23,8 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [Program, Episode, User, MediaUpload, Category],
-  migrations: [
-    process.env.NODE_ENV === 'production'
-      ? 'dist/migrations/*.js'
-      : 'migrations/*.ts',
-  ],
+  entities: [Program, User, Category, MediaUpload],
+  migrations: ['migrations/*.ts'],
   synchronize: false,
   logging: process.env.NODE_ENV === 'development',
   extra: {
