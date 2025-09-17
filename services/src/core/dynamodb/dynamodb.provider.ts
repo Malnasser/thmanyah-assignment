@@ -14,9 +14,7 @@ export const dynamoDBClientProvider: Provider = {
 
     const client = new DynamoDBClient({
       region: configService.get<string>('aws.region') || 'us-east-1',
-      endpoint: isLocal
-        ? configService.get<string>('aws.endpoint') || 'http://localhost:8000'
-        : undefined,
+      endpoint: isLocal ? configService.get<string>('aws.endpoint') : undefined,
       credentials: {
         accessKeyId: isLocal
           ? configService.get<string>('aws.accessKeyId') || 'dummy'
