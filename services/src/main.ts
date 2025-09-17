@@ -25,6 +25,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
+  app.getHttpAdapter().get('/health', (_req, res) => {
+    res.status(200).send('OK');
+  });
+
   // Bootstrap default user
   const authService = app.get(AuthService);
   const configService = app.get(ConfigService);

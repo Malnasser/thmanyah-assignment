@@ -21,7 +21,6 @@ export class SearchService {
   async search(dto: SearchProgramDto) {
     const { keyword, category, language, page = 1, limit = 10 } = dto;
 
-    // Query by category using GSI
     if (category) {
       const result = await this.dynamoDBClient.send(
         new QueryCommand({
