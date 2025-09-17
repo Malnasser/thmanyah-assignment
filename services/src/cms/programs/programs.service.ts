@@ -4,6 +4,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { BaseService } from '@cms/common/base/base.service';
 import { Program } from './entities';
@@ -64,14 +65,17 @@ export class ProgramsService extends BaseService<Program> {
   }
 
   async publishProgram(id: string) {
-    let entity = await this.programRepository.findById(id, null, [
+    const entity = await this.programRepository.findById(id, null, [
       'poster',
       'category',
     ]);
+    if (!entity) {
+      throw new NotFoundException('Program not found');
+    }
     entity.status = ContentStatus.PUBLISHED;
     entity.publishDate = new Date();
-    entity = await this.discoveryService.putProgram(entity);
-    if (!entity) {
+    const updatedEntity = await this.discoveryService.putProgram(entity);
+    if (!updatedEntity) {
       throw new HttpException(
         {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -80,7 +84,7 @@ export class ProgramsService extends BaseService<Program> {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-    entity = await this.programRepository.update(id, entity);
-    return entity;
+    await this.programRepository.update(id, updatedEntity);
+    return updatedEntity;
   }
 }
