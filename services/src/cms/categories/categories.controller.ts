@@ -52,7 +52,7 @@ export class CategoriesController extends BaseController<Category> {
   ): Promise<CategoryResDto> {
     const entity = new Category();
     Object.assign(entity, createCategoryDto);
-    const saved = await super._create(entity);
+    const saved = await this.categoriesService.create(entity);
     return CategoryResDto.fromEntity(saved);
   }
 

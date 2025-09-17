@@ -8,6 +8,9 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY_NAME: thmanyah-cms/cms-service
+  ECS_CLUSTER_NAME: thmanyah-cms-cluster
+  ECS_SERVICE_NAME: thmanyah-cms-cms-service
+  ECS_TASK_DEFINITION: thmanyah-cms-cms-service
 
 jobs:
   deploy:
@@ -34,5 +37,13 @@ jobs:
           IMAGE_TAG: latest
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_NAME:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY_NAME:latest services/
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY_NAME:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY_NAME:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_NAME:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_NAME:latest
+
+      - name: Update ECS service to force deployment
+        run: |
+          aws ecs update-service \
+            --cluster ${{ env.ECS_CLUSTER_NAME }} \
+            --service ${{ env.ECS_SERVICE_NAME }} \
+            --force-new-deployment
