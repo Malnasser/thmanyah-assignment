@@ -15,13 +15,15 @@ export const dynamoDBClientProvider: Provider = {
     const client = new DynamoDBClient({
       region: configService.get<string>('aws.region') || 'us-east-1',
       endpoint: isLocal ? configService.get<string>('aws.endpoint') : undefined,
-      credentials: {
-        accessKeyId: configService.get<string>('aws.accessKeyId'),
-        secretAccessKey: configService.get<string>('aws.secretAccessKey'),
-      },
+      ...(isLocal
+        ? {
+            credentials: {
+              accessKeyId: configService.get<string>('aws.accessKeyId'),
+              secretAccessKey: configService.get<string>('aws.secretAccessKey'),
+            },
+          }
+        : {}),
     });
-
-    // Wrap the low-level client in DynamoDBDocumentClient for easier JS object usage
     return DynamoDBDocumentClient.from(client);
   },
 };
