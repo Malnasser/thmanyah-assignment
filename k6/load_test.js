@@ -1,25 +1,15 @@
 import http from "k6/http";
-import { check, sleep } from "k6";
+import { sleep } from "k6";
 import { Rate } from "k6/metrics";
-
-// HOW TO RUN TESTS
-// # 10k dataset, 200 VUs
-// k6 run -e DATASET_SIZE=10000 -e VUS=200 load_test.js --out json=report_10k_200.json
-//
-// # 10k dataset, 500 VUs
-// k6 run -e DATASET_SIZE=10000 -e VUS=500 load_test.js --out json=report_10k_500.json
-//
-// # 50k dataset, 500 VUs
-// k6 run -e DATASET_SIZE=50000 -e VUS=500 load_test.js --out json=report_50k_500.json
-//
-// # 100k dataset, 1000 VUs
-// k6 run -e DATASET_SIZE=100000 -e VUS=1000 load_test.js --out json=report_100k_1000.json
 
 export let failureRate = new Rate("failed_requests");
 
-const DATASET_SIZE = __ENV.DATASET_SIZE || 10000;
+const DATASET_SIZE = Number(__ENV.DATASET_SIZE) || 10000;
 const BASE_URL = __ENV.BASE_URL || "http://localhost:3001";
 
+// -----------------------
+// k6 options
+// -----------------------
 export let options = {
   vus: Number(__ENV.VUS) || 200,
   duration: "1m",
@@ -27,10 +17,24 @@ export let options = {
     failed_requests: ["rate<0.01"],
     http_req_duration: ["p(95)<500"],
   },
+  metrics: {
+    // disable heavy default metrics
+    http_req_duration: false,
+    http_req_failed: false,
+    http_reqs: false,
+    http_req_connecting: false,
+    http_req_tls_handshaking: false,
+    http_req_receiving: false,
+    http_req_sending: false,
+    http_req_blocked: false,
+    http_req_waiting: false,
+    checks: false,
+  },
 };
 
-let token = "";
-
+// -----------------------
+// Setup: login only
+// -----------------------
 export function setup() {
   const loginRes = http.post(
     `${BASE_URL}/auth/login`,
@@ -41,30 +45,38 @@ export function setup() {
     { headers: { "Content-Type": "application/json" } },
   );
 
-  token = loginRes.json("accessToken");
-
-  let programIds = [];
-  for (let i = 1; i <= DATASET_SIZE; i++) {
-    programIds.push(i);
+  const token = loginRes.json("access_token");
+  if (!token) {
+    throw new Error(
+      `Login failed. Status: ${loginRes.status}, Body: ${loginRes.body}`,
+    );
   }
 
-  return { token, programIds };
+  return { token };
 }
 
+// -----------------------
+// Main VU function
+// -----------------------
 export default function (data) {
-  const { token, programIds } = data;
+  const { token } = data;
 
-  const randomId = programIds[Math.floor(Math.random() * programIds.length)];
+  // Pick a random program ID without storing all IDs in memory
+  const randomId = Math.floor(Math.random() * DATASET_SIZE) + 1;
 
   const res = http.get(
     `${BASE_URL}/discovery/search?page=1&limit=10&keyword=${randomId}`,
     {
       headers: { Authorization: `Bearer ${token}` },
+      // group requests to avoid time series explosion
+      tags: { name: "/discovery/search" },
+      // discard body to save memory
+      responseType: "none",
     },
   );
 
-  const success = check(res, { "status is 200": (r) => r.status === 200 });
-  failureRate.add(!success);
+  // manually track failure
+  failureRate.add(res.status !== 200);
 
   sleep(0.05);
 }

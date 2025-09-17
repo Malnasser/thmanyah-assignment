@@ -1,0 +1,38 @@
+"time","metric","group","scenario","name","method","status","expected_response","load_zone","tags","nz_count","count"
+"2025-09-17T20:43:21+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,1467
+"2025-09-17T20:43:21+00:00","http_req_failed","::setup","default","http://thmanyah-cms-alb-1317497767.us-east-1.elb.amazonaws.com/auth/login","POST","200","true","amazon:us:columbus","{'url': 'http://thmanyah-cms-alb-1317497767.us-east-1.elb.amazonaws.com/auth/login', 'proto': 'HTTP/1.1'}",0,1
+"2025-09-17T20:43:21+00:00","http_req_failed","","default","/discovery/search","GET","500","false","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1', 'error_code': '1500'}",23,23
+"2025-09-17T20:43:24+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3313
+"2025-09-17T20:43:24+00:00","http_req_failed","","default","/discovery/search","GET","500","false","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1', 'error_code': '1500'}",10,10
+"2025-09-17T20:43:27+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3716
+"2025-09-17T20:43:27+00:00","http_req_failed","","default","/discovery/search","GET","500","false","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1', 'error_code': '1500'}",7,7
+"2025-09-17T20:43:30+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3841
+"2025-09-17T20:43:30+00:00","http_req_failed","","default","/discovery/search","GET","500","false","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1', 'error_code': '1500'}",3,3
+"2025-09-17T20:43:33+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3804
+"2025-09-17T20:43:36+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3859
+"2025-09-17T20:43:39+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3890
+"2025-09-17T20:43:42+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3834
+"2025-09-17T20:43:42+00:00","http_req_failed","","default","/discovery/search","GET","500","false","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1', 'error_code': '1500'}",2,2
+"2025-09-17T20:43:45+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3812
+"2025-09-17T20:43:45+00:00","http_req_failed","","default","/discovery/search","GET","500","false","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1', 'error_code': '1500'}",4,4
+"2025-09-17T20:43:48+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3911
+"2025-09-17T20:43:48+00:00","http_req_failed","","default","/discovery/search","GET","500","false","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1', 'error_code': '1500'}",6,6
+"2025-09-17T20:43:51+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3802
+"2025-09-17T20:43:51+00:00","http_req_failed","","default","/discovery/search","GET","500","false","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1', 'error_code': '1500'}",70,70
+"2025-09-17T20:43:54+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,2826
+"2025-09-17T20:43:54+00:00","http_req_failed","","default","/discovery/search","GET","500","false","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1', 'error_code': '1500'}",688,688
+"2025-09-17T20:43:57+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3064
+"2025-09-17T20:43:57+00:00","http_req_failed","","default","/discovery/search","GET","500","false","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1', 'error_code': '1500'}",640,640
+"2025-09-17T20:44:00+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,2656
+"2025-09-17T20:44:00+00:00","http_req_failed","","default","/discovery/search","GET","500","false","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1', 'error_code': '1500'}",458,458
+"2025-09-17T20:44:03+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3620
+"2025-09-17T20:44:03+00:00","http_req_failed","","default","/discovery/search","GET","500","false","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1', 'error_code': '1500'}",134,134
+"2025-09-17T20:44:06+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3845
+"2025-09-17T20:44:06+00:00","http_req_failed","","default","/discovery/search","GET","500","false","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1', 'error_code': '1500'}",22,22
+"2025-09-17T20:44:09+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3868
+"2025-09-17T20:44:09+00:00","http_req_failed","","default","/discovery/search","GET","500","false","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1', 'error_code': '1500'}",9,9
+"2025-09-17T20:44:12+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3935
+"2025-09-17T20:44:15+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3950
+"2025-09-17T20:44:18+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,3946
+"2025-09-17T20:44:18+00:00","http_req_failed","","default","/discovery/search","GET","500","false","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1', 'error_code': '1500'}",2,2
+"2025-09-17T20:44:21+00:00","http_req_failed","","default","/discovery/search","GET","200","true","amazon:us:columbus","{'url': '/discovery/search', 'proto': 'HTTP/1.1'}",0,1966
