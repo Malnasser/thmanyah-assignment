@@ -206,4 +206,20 @@ export class ProgramsController extends BaseController<Program> {
 
     return ProgramResDto.fromEntity(program);
   }
+
+  @Post(':id/publish')
+  @ApiOperation({ summary: 'Publish article changes' })
+  @ApiParam({ name: 'id', type: String, description: 'Program ID' })
+  @ApiResponse({
+    status: 200,
+    type: ProgramResDto,
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiBearerAuth()
+  async publishProgram(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ) {
+    const publishProgram = await this.programsService.publishProgram(id);
+    return ProgramResDto.fromEntity(publishProgram);
+  }
 }

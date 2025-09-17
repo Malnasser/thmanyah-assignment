@@ -25,10 +25,13 @@ export default registerAs('app', () => ({
   },
   aws: {
     region: process.env.AWS_REGION,
-    endpoint: process.env.AWS_ENDPOINT,
+    endpoint: process.env.AWS_ENDPOINT || 'http://localhost:8000',
     forcePathStyle: process.env.AWS_FORCE_PATH_STYLE === 'true',
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     bucketName: process.env.AWS_BUCKET_NAME,
+  },
+  dynamodb: {
+    publish_table: process.env.DYNAMO_PROGRAM_TABLE,
   },
 }));

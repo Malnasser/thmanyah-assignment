@@ -29,4 +29,3 @@ export class AddFullTextSearchIndexToPrograms1757091849362
     await queryRunner.query(`ALTER TABLE programs DROP COLUMN search_vector`);
   }
 }
-

@@ -12,8 +12,7 @@ export class S3Service implements IS3Service {
     this.s3 = new S3Client({
       region: this.configService.get<string>('app.aws.region'),
       endpoint: this.configService.get<string>('app.aws.endpoint'),
-      forcePathStyle:
-        this.configService.get<boolean>('app.aws.forcePathStyle'),
+      forcePathStyle: this.configService.get<boolean>('app.aws.forcePathStyle'),
       credentials: {
         accessKeyId: this.configService.get<string>('app.aws.accessKeyId'),
         secretAccessKey: this.configService.get<string>(

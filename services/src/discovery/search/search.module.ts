@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { SearchController } from './search.controller';
-import { ProgramsModule } from '@cms/programs/programs.module';
+import { ConfigModule } from '@nestjs/config';
+import { DynamoDBModule } from '@core/dynamodb';
 
 @Module({
-  imports: [ProgramsModule],
+  imports: [ConfigModule, DynamoDBModule],
   providers: [SearchService],
   controllers: [SearchController],
 })

@@ -33,6 +33,24 @@ services:
       timeout: 5s
       retries: 5
 
+  dynamodb:
+    image: amazon/dynamodb-local
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb -inMemory"
+    volumes:
+      - dynamodb_data:/home/dynamodblocal/data
+
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin
+    ports:
+      - "8001:8001"
+    environment:
+      DYNAMO_ENDPOINT: http://dynamodb:8000
+      AWS_REGION: us-east-1
+    depends_on:
+      - dynamodb
+
   minio:
     image: minio/minio
     container_name: cms_minio
@@ -83,7 +101,7 @@ services:
       AWS_ACCESS_KEY_ID: minioadmin
       AWS_SECRET_ACCESS_KEY: minioadmin
       AWS_BUCKET_NAME: my-bucket
-      AWS_ENDPOINT: http://minio:9000
+      AWS_ENDPOINT: http://minio:8000
       AWS_FORCE_PATH_STYLE: "true"
 
       # App
@@ -97,6 +115,8 @@ services:
       TYPEORM_DATABASE: database
       TYPEORM_SYNCHRONIZE: "true"
       TYPEORM_LOGGING: "true"
+
+      DYNAMO_PROGRAM_TABLE: v1_published_programs
     depends_on:
       db:
         condition: service_healthy
@@ -111,6 +131,7 @@ services:
 volumes:
   postgres_data:
   miniodata:
+  dynamodb_data:
 
 networks:
   app-network:

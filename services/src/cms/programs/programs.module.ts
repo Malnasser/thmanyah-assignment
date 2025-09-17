@@ -7,6 +7,7 @@ import { ProgramRepository } from './programs.repository';
 import { MediaModule } from '@cms/media/media.module';
 import { CategoriesModule } from '@cms/categories/categories.module';
 import { CacheModule } from '@core/cache/cache.module';
+import { DiscoveryModule } from '@discovery/discovery.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { CacheModule } from '@core/cache/cache.module';
     MediaModule,
     CategoriesModule,
     CacheModule,
+    DiscoveryModule,
   ],
   controllers: [ProgramsController],
   providers: [ProgramsService, ProgramRepository],

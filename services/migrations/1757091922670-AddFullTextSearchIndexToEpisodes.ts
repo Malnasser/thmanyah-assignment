@@ -26,4 +26,3 @@ export class AddFullTextSearchIndexToEpisodes1757091922670
     await queryRunner.query(`ALTER TABLE episodes DROP COLUMN search_vector;`);
   }
 }
-

@@ -32,6 +32,13 @@ export class Program extends BaseEntity {
   @JoinColumn({ name: 'categoryId' })
   category: Category;
 
+  @ManyToOne(() => MediaUpload, (media) => media.programsWithPoster, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'poster_id' })
+  poster?: MediaUpload;
+
   @Column({ type: 'enum', enum: MediaType, default: MediaType.PODCAST })
   mediaType: MediaType;
 
@@ -40,13 +47,6 @@ export class Program extends BaseEntity {
 
   @Column({ type: 'timestamp', nullable: true })
   publishDate: Date;
-
-  @ManyToOne(() => MediaUpload, (media) => media.programsWithPoster, {
-    nullable: true,
-    onDelete: 'SET NULL',
-  })
-  @JoinColumn({ name: 'poster_id' })
-  poster?: MediaUpload;
 
   @Column({ type: 'uuid', nullable: true })
   categoryId: string;

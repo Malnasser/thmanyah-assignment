@@ -1,10 +1,18 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { BaseService } from '@cms/common/base/base.service';
 import { Program } from './entities';
 import { ProgramRepository } from './programs.repository';
 import { ICacheService } from '@core/cache/interfaces/cache-service.interface';
 import { DeepPartial } from 'typeorm';
 import { CategoriesService } from '@cms/categories/categories.service';
+import { DiscoveryService } from '@discovery/discovery.service';
+import { ContentStatus } from '@cms/common';
 
 @Injectable()
 export class ProgramsService extends BaseService<Program> {
@@ -12,6 +20,7 @@ export class ProgramsService extends BaseService<Program> {
     private readonly programRepository: ProgramRepository,
     @Inject('ICacheService') cacheService: ICacheService,
     private readonly categoryService: CategoriesService,
+    private readonly discoveryService: DiscoveryService,
   ) {
     super(programRepository, cacheService, Program);
   }
@@ -52,5 +61,26 @@ export class ProgramsService extends BaseService<Program> {
       'category',
       'poster',
     ]);
+  }
+
+  async publishProgram(id: string) {
+    let entity = await this.programRepository.findById(id, null, [
+      'poster',
+      'category',
+    ]);
+    entity.status = ContentStatus.PUBLISHED;
+    entity.publishDate = new Date();
+    entity = await this.discoveryService.putProgram(entity);
+    if (!entity) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: `Error publishing program: ${id}`,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+    entity = await this.programRepository.update(id, entity);
+    return entity;
   }
 }
