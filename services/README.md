@@ -40,3 +40,44 @@ The service requires a set of environment variables to run correctly. These are 
 # From the project root
 cp services/src/.env.example services/src/.env
 ```
+
+### Local DynamoDB Setup
+aws dynamodb create-table \
+  --table-name publish_table \
+  --attribute-definitions \
+      AttributeName=id,AttributeType=S \
+      AttributeName=categoryId,AttributeType=S \
+      AttributeName=language,AttributeType=S \
+      AttributeName=status,AttributeType=S \
+      AttributeName=publishDate,AttributeType=S \
+  --key-schema AttributeName=id,KeyType=HASH \
+  --billing-mode PAY_PER_REQUEST \
+  --global-secondary-indexes '[
+    {
+      "IndexName": "category",
+      "KeySchema": [
+        {"AttributeName":"categoryId","KeyType":"HASH"},
+        {"AttributeName":"publishDate","KeyType":"RANGE"}
+      ],
+      "Projection":{"ProjectionType":"ALL"}
+    },
+    {
+      "IndexName": "language",
+      "KeySchema": [
+        {"AttributeName":"language","KeyType":"HASH"},
+        {"AttributeName":"publishDate","KeyType":"RANGE"}
+      ],
+      "Projection":{"ProjectionType":"ALL"}
+    },
+    {
+      "IndexName": "status",
+      "KeySchema": [
+        {"AttributeName":"status","KeyType":"HASH"},
+        {"AttributeName":"publishDate","KeyType":"RANGE"}
+      ],
+      "Projection":{"ProjectionType":"ALL"}
+    }
+  ]' \
+  --endpoint-url http://localhost:8000
+
+```
