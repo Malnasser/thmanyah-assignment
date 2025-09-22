@@ -37,6 +37,7 @@ The easiest way to get the entire system running is by using Docker Compose. Thi
     *   **MinIO Console:** `http://localhost:9001` (Credentials: `minioadmin`/`minioadmin`)
     *   **PostgreSQL:** Connect on port `5432`
     *   **Redis:** Connect on port `6379`
+    *   **DynamoDB Admin:** `http://localhost:8001`
 
 The API documentation can be found at `http://localhost:3001/api`.
 
@@ -90,3 +91,61 @@ If you prefer to run the main service on your host machine, you can use Docker t
     ```
 
 The CMS will be running on `http://localhost:3000` by default (note the port difference from the Docker setup).
+
+### Local DynamoDB Setup
+
+If you are working with features that use DynamoDB, you'll need to start the DynamoDB service and create the necessary tables.
+
+1.  **Start the DynamoDB service:**
+
+    This is already included in the main `docker-compose up` command. If you are running services individually, you can start it with:
+
+    ```bash
+    docker-compose up -d dynamodb
+    ```
+
+2.  **Create the `publish_table`:**
+
+    Run the following command to set up the table with the correct schema and indexes.
+
+    ```bash
+    aws dynamodb create-table \
+      --table-name publish_table \
+      --attribute-definitions \
+          AttributeName=id,AttributeType=S \
+          AttributeName=categoryId,AttributeType=S \
+          AttributeName=language,AttributeType=S \
+          AttributeName=status,AttributeType=S \
+          AttributeName=publishDate,AttributeType=S \
+      --key-schema AttributeName=id,KeyType=HASH \
+      --billing-mode PAY_PER_REQUEST \
+      --global-secondary-indexes '[
+        {
+          "IndexName": "category",
+          "KeySchema": [
+            {"AttributeName":"categoryId","KeyType":"HASH"},
+            {"AttributeName":"publishDate","KeyType":"RANGE"}
+          ],
+          "Projection":{"ProjectionType":"ALL"}
+        },
+        {
+          "IndexName": "language",
+          "KeySchema": [
+            {"AttributeName":"language","KeyType":"HASH"},
+            {"AttributeName":"publishDate","KeyType":"RANGE"}
+          ],
+          "Projection":{"ProjectionType":"ALL"}
+        },
+        {
+          "IndexName": "status",
+          "KeySchema": [
+            {"AttributeName":"status","KeyType":"HASH"},
+            {"AttributeName":"publishDate","KeyType":"RANGE"}
+          ],
+          "Projection":{"ProjectionType":"ALL"}
+        }
+      ]' \
+      --endpoint-url http://localhost:8000
+    ```
+
+
